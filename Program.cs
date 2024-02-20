@@ -1,5 +1,4 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using CaptainSonar;
 using CaptainSonar.Map;
 
 var map = new Map(MapType.Alpha);

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CaptainSonar.Map;
-using CaptainSonar;
 
 namespace CaptainSonar.Assets
 {
