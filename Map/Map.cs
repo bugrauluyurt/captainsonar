@@ -41,7 +41,7 @@ namespace CaptainSonar.Map
             return matrix;
         }
 
-        public void PrintMap()
+        public void PrintMap(bool isSectionViewEnabled = false)
         {
             
             if (_dots == null)
@@ -83,8 +83,8 @@ namespace CaptainSonar.Map
                 for (int j = 0; j < _dots.GetLength(1); j++)
                 {
                     var dot = _dots[i, j];
-                    //var printValue = dot.HasObstacle ? "X" : ".";
-                    var printValue = dot.HasObstacle ? "X" : ((int)dot.Section).ToString();
+                    var printedNonObstacle = isSectionViewEnabled ? ((int)dot.Section).ToString() : ".";
+                    var printValue = dot.HasObstacle ? "X" : printedNonObstacle;
                     Console.Write(printValue + " ");
                 }
                 // Move to the next line after each row

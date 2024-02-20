@@ -8,6 +8,7 @@ namespace CaptainSonar.Player
 {
     internal enum PlayerRole
     {
+        System,
         Captain,
         FirstMate,
         Engineer,

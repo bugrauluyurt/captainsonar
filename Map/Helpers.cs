@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -100,6 +101,24 @@ namespace CaptainSonar.Map
             }
 
             return MapSection.None;
+        }
+
+        public static bool CanMove(Coordinate coordinate, MapType mapType)
+        {
+            var obstacles = GetObstaclesByMapType(mapType);
+            var row = coordinate.Row;
+            if (row < 0 || row >= RowCount)
+            {
+                return false;
+            }
+
+            var column = coordinate.Column;
+            if (column < 0 || column >= ColumnCount)
+            {
+                return false;
+            }
+            
+            return !obstacles.Any(obstacle => obstacle[0] == coordinate.Row && obstacle[1] == coordinate.Column);
         }
     }
 }
