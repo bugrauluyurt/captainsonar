@@ -48,7 +48,7 @@ namespace CaptainSonar.Assets
                 Console.WriteLine("The player cannot detonate this mine");
                 return false;
             }
-            Console.WriteLine($"The mine located at {_location.X}:{_location.Y} has been detonated by {player.Name}");
+            Console.WriteLine($"The mine located at {_location.Row}:{_location.Column} has been detonated by {player.Name}");
             return true;
         }
     }

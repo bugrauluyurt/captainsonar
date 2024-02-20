@@ -6,8 +6,20 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Map
 {
-    internal class Dot
+
+    internal class Dot(Coordinate location, bool hasObstacle)
     {
-        public required Coordinate Location { get; set; }
+        public readonly Coordinate Location = location;
+        public readonly bool HasObstacle = hasObstacle;
+
+        public override string ToString()
+        {
+            return $"{Location.Row}:{Location.Column}";
+        }
+
+        public static string GetReadableCoordinate(Coordinate location)
+        {
+            return $"{location.Row + 1}:{MapHelpers.ColumnsAlphabetical[location.Column]}";
+        }
     }
 }
