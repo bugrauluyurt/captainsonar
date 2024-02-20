@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Map
 {
-    internal class Map
+    internal class Grid
     {
         private readonly Dot[,] _dots;
 
-        public readonly MapType MapType;
+        public readonly GridType MapType;
         public readonly int[] Dimensions;
         public readonly int[][] Obstacles;
 
-        public Map(MapType mapType)
+        public Grid(GridType mapType)
         {
             MapType = mapType;
-            Dimensions = Helpers.GetDimensionsByMapType(mapType);
-            Obstacles = Helpers.GetObstaclesByMapType(mapType);
+            Dimensions = Helpers.GetDimensionsByGridType(mapType);
+            Obstacles = GridObstacles.GetObstaclesByGridType(mapType);
             _dots = CreateDots(Dimensions[0], Dimensions[1], Obstacles);
         }
 
@@ -34,14 +34,14 @@ namespace CaptainSonar.Map
                     var coordinate = new Coordinate(row, column);
                     // Not optimal, but it's a small matrix
                     var hasObstacle = obstacles.Any(obstacle => obstacle[0] == row && obstacle[1] == column);
-                    var mapSection = Helpers.GetMapSectionFromCoordinate(coordinate);
+                    var mapSection = Helpers.GetGridSectionFromCoordinate(coordinate);
                     matrix[row, column] = new Dot(coordinate, mapSection, hasObstacle);
                 }
             }
             return matrix;
         }
 
-        public void PrintMap(bool isSectionViewEnabled = false)
+        public void PrintGrid(bool isSectionViewEnabled = false)
         {
             
             if (_dots == null)

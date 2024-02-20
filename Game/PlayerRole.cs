@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaptainSonar.Player
+namespace CaptainSonar.Game
 {
     internal enum PlayerRole
     {

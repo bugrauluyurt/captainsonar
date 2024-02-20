@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaptainSonar.Player
+namespace CaptainSonar.Game
 {
     internal class Player
     {
         public required string Name { get; set; }
-        public required PlayerRole Role { get; set; }
+        public required PlayerRole PlayerRole { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Map
 {
-    enum MapSection
+    enum GridSection
     {
         None = 0,
         One = 1,

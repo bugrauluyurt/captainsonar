@@ -10,10 +10,10 @@ namespace CaptainSonar.Assets
     internal class Mine
     {
         private Coordinate _location;
-        private Player.Player _owner;
+        private Game.Player _owner;
         private bool _isActive = false;
 
-        public Mine(CaptainSonar.Player.Player owner, Coordinate location, bool shouldActivateOnInit = true)
+        public Mine(Game.Player owner, Coordinate location, bool shouldActivateOnInit = true)
         {
             _location = location;
             _owner = owner;
@@ -24,9 +24,9 @@ namespace CaptainSonar.Assets
         }
 
         public Coordinate GetLocation() => _location;
-        public CaptainSonar.Player.Player GetOwner() => _owner;
+        public Game.Player GetOwner() => _owner;
 
-        private bool CanDetonate(CaptainSonar.Player.Player player)
+        private bool CanDetonate(Game.Player player)
         {
             return _isActive && _owner == player;
         }
@@ -41,7 +41,7 @@ namespace CaptainSonar.Assets
             return _isActive;
         }
 
-        public bool Detonate(CaptainSonar.Player.Player player)
+        public bool Detonate(Game.Player player)
         {
             if (!CanDetonate(player)) {
                 Console.WriteLine("The player cannot detonate this mine");

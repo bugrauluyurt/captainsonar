@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaptainSonar.Session
+namespace CaptainSonar.Map
 {
-    internal class Session
+    enum GridType
     {
+        Alpha,
+        Bravo,
+        Charlie,
     }
 }

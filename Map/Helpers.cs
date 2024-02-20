@@ -8,104 +8,83 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace CaptainSonar.Map
-{
-    // @TODO: Carry this into the Map namespace
-    internal enum MapType
-    {
-        Alpha,
-        Bravo,
-        Charlie,
-    }
+{    
 
-    internal class Helpers
+    class Helpers
     {
         public static string[] ColumnsAlphabetical = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"];
 
         const int RowCount = 15;
         const int ColumnCount = 15;
 
-        static readonly Dictionary<MapType, int[][]> Obstacles = new()
+        public static string GetReadableCoordinate(Coordinate coordinate)
         {
-            { MapType.Alpha, [
-                [1, 2], [1, 6], [1, 12], [1, 13],
-                [2, 2], [2, 8], [2, 12],
-                [3, 8],
-                [6, 1], [6, 3], [6, 6], [6, 8],
-                [7, 1], [7, 3], [7, 6],
-                [8, 3], [8, 7], [8, 11], [8, 12], [8, 13],
-                [10, 3],
-                [11, 2], [11, 7], [11, 11],
-                [12, 0], [12, 12],
-                [13, 2], [13, 6], [13, 8], [13, 13],
-                [14, 3]
-            ] },
-        };
-
-        public static int[][] GetObstaclesByMapType(MapType mapType)
-        {
-            return Obstacles[mapType];
+            var column = ColumnsAlphabetical[coordinate.Column];
+            var row = coordinate.Row + 1;
+            return $"{column}{row}";
         }
 
-        public static int[] GetDimensionsByMapType(MapType mapType)
+        public static int[] GetDimensionsByGridType(GridType gridType)
         {
             return [RowCount, ColumnCount];
         }
 
-        public static MapSection GetMapSectionFromCoordinate(Coordinate coordinate)
+        public static GridSection GetGridSectionFromCoordinate(Coordinate coordinate)
         {
             var column = coordinate.Column;
             var row = coordinate.Row;
             if ((0 <= row && row < 5) && (0 <= column & column < 5))
             {
-                return MapSection.One;
+                return GridSection.One;
             }
 
             if ((0 <= row && row < 5) && (5 <= column & column < 10))
             {
-                return MapSection.Two;
+                return GridSection.Two;
             }
 
             if ((0 <= row && row < 5) && (10 <= column & column < 15))
             {
-                return MapSection.Three;
+                return GridSection.Three;
             }
 
             if ((5 <= row && row < 10) && (0 <= column & column < 5))
             {
-                return MapSection.Four;
+                return GridSection.Four;
             }
 
             if ((5 <= row && row < 10) && (5 <= column & column < 10))
             {
-                return MapSection.Five;
+                return GridSection.Five;
             }
 
             if ((5 <= row && row < 10) && (10 <= column & column < 15))
             {
-                return MapSection.Six;
+                return GridSection.Six;
             }
 
             if ((10 <= row && row < 15) && (0 <= column & column < 5))
             {
-                return MapSection.Seven;
+                return GridSection.Seven;
             }
 
             if ((10 <= row && row < 15) && (5 <= column & column < 10))
             {
-                return MapSection.Eight;
+                return GridSection.Eight;
             }
 
             if ((10 <= row && row < 15) && (10 <= column & column < 15))
             {
-                return MapSection.Nine;
+                return GridSection.Nine;
             }
 
-            return MapSection.None;
+            return GridSection.None;
         }
 
-        public static bool CanMove(Coordinate coordinate, MapType mapType)
+        // @TODO: CanMove should be moved to a different class
+        public static bool CanMove(Coordinate coordinate, GridType mapType)
         {
-            var obstacles = GetObstaclesByMapType(mapType);
+            var obstacles = GridObstacles.GetObstaclesByGridType(mapType);
             var row = coordinate.Row;
             if (row < 0 || row >= RowCount)
             {
@@ -118,6 +97,7 @@ namespace CaptainSonar.Map
                 return false;
             }
             
+            // @TODO: Player can not move onto his/her own path. The system needs to check it here.
             return !obstacles.Any(obstacle => obstacle[0] == coordinate.Row && obstacle[1] == coordinate.Column);
         }
     }

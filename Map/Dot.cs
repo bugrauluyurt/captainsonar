@@ -8,20 +8,20 @@ using static CaptainSonar.Map.Pathfinder;
 namespace CaptainSonar.Map
 {
 
-    internal class Dot(Coordinate location, MapSection section, bool hasObstacle = false) : Node(location, null, 0, 0)
+    internal class Dot(Coordinate location, GridSection section, bool hasObstacle = false) : Node(location, null, 0, 0)
     {
         // public readonly Coordinate Location;
         public readonly bool HasObstacle = hasObstacle;
-        public readonly MapSection Section = section;
+        public readonly GridSection Section = section;
 
         public override string ToString()
         {
             return $"{Location.Row}:{Location.Column}";
         }
 
-        public static string GetReadableDot(Coordinate location)
+        public static string GetReadableLocation(Coordinate location)
         {
-            return $"{location.Row + 1}:{Helpers.ColumnsAlphabetical[location.Column]}";
+            return Helpers.GetReadableCoordinate(location);
         }
     }
 }
