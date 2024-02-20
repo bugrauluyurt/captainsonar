@@ -8,7 +8,8 @@ namespace CaptainSonar.Game
 {
     internal class Player
     {
+        public required string Id { get; set; }
         public required string Name { get; set; }
-        public required PlayerRole PlayerRole { get; set; }
+        public required PlayerRole Role { get; set; }
     }
 }
