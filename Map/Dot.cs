@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using static CaptainSonar.Pathfinder;
 
 namespace CaptainSonar.Map
@@ -19,9 +18,9 @@ namespace CaptainSonar.Map
             return $"{Location.Row}:{Location.Column}";
         }
 
-        public static string GetReadableCoordinate(Coordinate location)
+        public static string GetReadableDot(Coordinate location)
         {
-            return $"{location.Row + 1}:{MapHelpers.ColumnsAlphabetical[location.Column]}";
+            return $"{location.Row + 1}:{Helpers.ColumnsAlphabetical[location.Column]}";
         }
     }
 }
