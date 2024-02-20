@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static CaptainSonar.Pathfinder;
+
 namespace CaptainSonar.Map
 {
 
-    internal class Dot(Coordinate location, bool hasObstacle)
+    internal class Dot(Coordinate location, bool hasObstacle) : Node(location, null, 0, 0)
     {
-        public readonly Coordinate Location = location;
+        // public readonly Coordinate Location;
         public readonly bool HasObstacle = hasObstacle;
 
         public override string ToString()

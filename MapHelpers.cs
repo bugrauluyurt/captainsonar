@@ -9,15 +9,13 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar
 {
+    // @TODO: Carry this into the Map namespace
     internal enum MapType
     {
         Alpha,
         Bravo
     }
 
-    
-    
-    // @TODO: Rename this to MapHelpers and create a helpers folder
     internal class MapHelpers
     {
         const int RowCount = 15;
@@ -42,80 +40,10 @@ namespace CaptainSonar
             ] },
         };
 
-        static public int GetDistance(Dot a, Dot b)
-        {
-            return Math.Abs(a.Location.Row - b.Location.Row) + Math.Abs(a.Location.Column - b.Location.Column);
-        }
-
-        static public List<Dot> GetNeighborNodes(Dot dot, Dot[,] grid)
-        {
-            List<Dot> neighborNodes = new List<Dot>();
-
-            int startX = Math.Max(0, dot.Location.Row - 1);
-            int endX = Math.Min(grid.GetLength(0) - 1, dot.Location.Row + 1);
-            int startY = Math.Max(0, dot.Location.Column - 1);
-            int endY = Math.Min(grid.GetLength(1) - 1, dot.Location.Column + 1);
-
-            for (int x = startX; x <= endX; x++)
-            {
-                for (int y = startY; y <= endY; y++)
-                {
-                    if (x == dot.Location.Row && y == dot.Location.Column)
-                        continue;
-
-                    neighborNodes.Add(grid[x, y]);
-                }
-            }
-
-            return neighborNodes;
-        }
-
-        static public List<Dot>? CalculateShortestDistance(Dot[,] grid, Dot startNode, Dot endNode)
-        {
-            List<Dot> openList = new List<Dot> { startNode };
-            List<Dot> closedList = new List<Dot>();
-
-            while (openList.Count > 0)
-            {
-                Dot? currentNode = openList.OrderBy(node => node.FCost).First();
-
-                if (currentNode == endNode)
-                {
-                    // We found the path
-                    List<Dot> path = new List<Dot>();
-                    while (currentNode != null)
-                    {
-                        path.Add(currentNode);
-                        currentNode = currentNode?.Parent;
-                    }
-                    path.Reverse();
-                    return path;
-                }
-
-                openList.Remove(currentNode);
-                closedList.Add(currentNode);
-
-                foreach (var neighborNode in GetNeighborNodes(currentNode, grid))
-                {
-                    if (closedList.Contains(neighborNode) || neighborNode.HasObstacle)
-                        continue;
-
-                    int tentativeGCost = currentNode.GCost + GetDistance(currentNode, neighborNode);
-                    if (tentativeGCost < neighborNode.GCost || !openList.Contains(neighborNode))
-                    {
-                        neighborNode.Parent = currentNode;
-                        neighborNode.GCost = tentativeGCost;
-                        neighborNode.HCost = GetDistance(neighborNode, endNode);
-
-                        if (!openList.Contains(neighborNode))
-                            openList.Add(neighborNode);
-                    }
-                }
-            }
-
-            // No path could be found
-            return null;
-        }
+        //static public int CalculateShortestDistance(Dot[,] grid, Dot startNode, Dot endNode)
+        //{
+        //    return 0;
+        //}
 
         static public Dot[,] CreateDots(MapType mapType, int columnCount = ColumnCount, int rowCount = RowCount)
         {
@@ -136,7 +64,7 @@ namespace CaptainSonar
         public static void PrintMap(Dot[,] dots)
         {
             // Print the column headers
-            Console.Write("  ");
+            Console.Write("   ");
 
             for (int i = 0; i < dots.GetLength(1); i++)
             {

@@ -5,17 +5,13 @@ using CaptainSonar.Map;
 var dots = MapHelpers.CreateDots(MapType.Alpha);
 MapHelpers.PrintMap(dots);
 
+var startCoordinate = new Coordinate(14, 0);
+var endCoordinate = new Coordinate(12, 3);
 
+var shortestPathCount = Pathfinder.FindShortestPathCount(dots, startCoordinate, endCoordinate);
+Console.WriteLine(shortestPathCount);
 // Find the shortest distance between two points
-var start = new Dot(new Coordinate(2, 5), false);
-var end = new Dot(new Coordinate(4, 5), false);
+// var start = new Dot(new Coordinate(2, 5), false);
+// var end = new Dot(new Coordinate(4, 5), false);
 
-var distance = MapHelpers.CalculateShortestDistance(dots, start, end);
-if (distance == null)
-{
-    Console.WriteLine($"No path could be found between {Dot.GetReadableCoordinate(start.Location)} and {Dot.GetReadableCoordinate(end.Location)}.");
-}
-else
-{
-    Console.WriteLine($"Shortest distance between {Dot.GetReadableCoordinate(start.Location)} and {Dot.GetReadableCoordinate(end.Location)} is {distance.Count} moves.");
-}
+// var distance = MapHelpers.CalculateShortestDistance(dots, start, end);
