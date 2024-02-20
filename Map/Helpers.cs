@@ -47,7 +47,59 @@ namespace CaptainSonar.Map
 
         public static int[] GetDimensionsByMapType(MapType mapType)
         {
-            return new int[] { RowCount, ColumnCount };
+            return [RowCount, ColumnCount];
+        }
+
+        public static MapSection GetMapSectionFromCoordinate(Coordinate coordinate)
+        {
+            var column = coordinate.Column;
+            var row = coordinate.Row;
+            if ((0 <= row && row < 5) && (0 <= column & column < 5))
+            {
+                return MapSection.One;
+            }
+
+            if ((0 <= row && row < 5) && (5 <= column & column < 10))
+            {
+                return MapSection.Two;
+            }
+
+            if ((0 <= row && row < 5) && (10 <= column & column < 15))
+            {
+                return MapSection.Three;
+            }
+
+            if ((5 <= row && row < 10) && (0 <= column & column < 5))
+            {
+                return MapSection.Four;
+            }
+
+            if ((5 <= row && row < 10) && (5 <= column & column < 10))
+            {
+                return MapSection.Five;
+            }
+
+            if ((5 <= row && row < 10) && (10 <= column & column < 15))
+            {
+                return MapSection.Six;
+            }
+
+            if ((10 <= row && row < 15) && (0 <= column & column < 5))
+            {
+                return MapSection.Seven;
+            }
+
+            if ((10 <= row && row < 15) && (5 <= column & column < 10))
+            {
+                return MapSection.Eight;
+            }
+
+            if ((10 <= row && row < 15) && (10 <= column & column < 15))
+            {
+                return MapSection.Nine;
+            }
+
+            return MapSection.None;
         }
     }
 }

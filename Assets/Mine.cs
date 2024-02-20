@@ -10,7 +10,7 @@ namespace CaptainSonar.Assets
     internal class Mine
     {
         private Coordinate _location;
-        private CaptainSonar.Player.Player _owner;
+        private Player.Player _owner;
         private bool _isActive = false;
 
         public Mine(CaptainSonar.Player.Player owner, Coordinate location, bool shouldActivateOnInit = true)

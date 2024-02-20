@@ -34,7 +34,8 @@ namespace CaptainSonar.Map
                     var coordinate = new Coordinate(row, column);
                     // Not optimal, but it's a small matrix
                     var hasObstacle = obstacles.Any(obstacle => obstacle[0] == row && obstacle[1] == column);
-                    matrix[row, column] = new Dot(coordinate, hasObstacle);
+                    var mapSection = Helpers.GetMapSectionFromCoordinate(coordinate);
+                    matrix[row, column] = new Dot(coordinate, mapSection, hasObstacle);
                 }
             }
             return matrix;
@@ -82,7 +83,8 @@ namespace CaptainSonar.Map
                 for (int j = 0; j < _dots.GetLength(1); j++)
                 {
                     var dot = _dots[i, j];
-                    var printValue = dot.HasObstacle ? "X" : ".";
+                    //var printValue = dot.HasObstacle ? "X" : ".";
+                    var printValue = dot.HasObstacle ? "X" : ((int)dot.Section).ToString();
                     Console.Write(printValue + " ");
                 }
                 // Move to the next line after each row

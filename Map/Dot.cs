@@ -8,10 +8,11 @@ using static CaptainSonar.Map.Pathfinder;
 namespace CaptainSonar.Map
 {
 
-    internal class Dot(Coordinate location, bool hasObstacle) : Node(location, null, 0, 0)
+    internal class Dot(Coordinate location, MapSection section, bool hasObstacle = false) : Node(location, null, 0, 0)
     {
         // public readonly Coordinate Location;
         public readonly bool HasObstacle = hasObstacle;
+        public readonly MapSection Section = section;
 
         public override string ToString()
         {
