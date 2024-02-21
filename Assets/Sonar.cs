@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Assets
 {
-    enum AssetType
+    internal class Sonar
     {
-        Health,
-        Attack, // Mine, Torpedo
-        Radar, // Drone, Sonar
-        Passive // Silence, Scenario
     }
 }

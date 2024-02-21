@@ -12,8 +12,8 @@ namespace CaptainSonar.Assets
         private readonly int _size = size;
         private int _currentSize = 0;
 
-        private bool IsFilled => _currentSize == _size;
-        private bool IsEmpty => _currentSize == 0;
+        public bool IsFilled => _currentSize == _size;
+        public bool IsEmpty => _currentSize == 0;
 
         public void Increase()
         {
@@ -36,11 +36,12 @@ namespace CaptainSonar.Assets
         }
     }
 
-    internal abstract class Asset(Player owner, AssetType type, int size)
+    internal abstract class Asset(Player owner, AssetType assetType, ActionType actionType, int size)
     {
         private readonly Player _owner = owner;
-        public readonly AssetType Type = type;
-        public readonly AssetSlots Slots = new(size);
+        public readonly AssetType AssetType = assetType;
+        public readonly ActionType ActionType = actionType;
+        public AssetSlots Slots = new(size);
 
         public Player GetOwner() => _owner;
     }

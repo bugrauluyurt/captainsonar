@@ -15,5 +15,6 @@ namespace CaptainSonar.Game
         Silence,
         Scenario,
         Move,
+        None,
     }
 }
