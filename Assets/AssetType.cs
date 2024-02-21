@@ -8,9 +8,10 @@ namespace CaptainSonar.Assets
 {
     enum AssetType
     {
-        Health,
+        Health, // Health
         Attack, // Mine, Torpedo
         Radar, // Drone, Sonar
-        Passive // Silence, Scenario
+        Passive, // Silence, Scenario,
+        Nuclear, // Nuclear
     }
 }
