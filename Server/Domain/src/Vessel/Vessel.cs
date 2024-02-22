@@ -15,5 +15,9 @@ namespace CaptainSonar.Vessel
             Rooms[index] = room;
         }
 
+        public bool IsAllNuclearRoomUnitsDamaged()
+        {
+            return Rooms?.All(room => room.IsAllNuclearRoomUnitsDamaged()) ?? false;
+        }
     }
 }

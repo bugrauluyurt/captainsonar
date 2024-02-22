@@ -8,17 +8,23 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Vessel
 {
-    internal class RoomUnit(AssetType type, Direction direction, bool isMain, RoomUnitType? roomUnitType)
+    internal class RoomUnit(string positionId, AssetType type, Direction direction, bool isMain, RoomUnitType? roomUnitType)
     {
+        public readonly string PositionId = positionId;
         private readonly AssetType _type = type;
         private readonly Direction _unitDirection = direction;
         private readonly RoomUnitType? _roomUnitType = roomUnitType;
-        private readonly bool IsMain = isMain;
+        public readonly bool IsMain = isMain;
         private bool _isDamaged = false;
 
         public AssetType GetAssetType()
         {
             return _type;
+        }
+
+        public RoomUnitType? GetRoomUnitType()
+        {
+            return _roomUnitType;
         }
 
         public void Damage()
