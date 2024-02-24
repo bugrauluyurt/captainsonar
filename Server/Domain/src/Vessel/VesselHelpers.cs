@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Vessel
 {
-    class Helpers
+    class VesselHelpers
     {
         private static readonly Dictionary<RoomPosition, Direction> RoomPositionDirections = new()
         {
@@ -65,6 +65,21 @@ namespace CaptainSonar.Vessel
                 }
             }
         };
+
+        public static Vessel CreateVessel(VesselType vesselType)
+        {
+            var systemVessels = GetSystemVessel(vesselType);
+            List<Room> rooms = [];
+            foreach (var roomPosition in systemVessels.Keys)
+            {
+                var direction = GetRoomDirectionByPosition(roomPosition) ?? throw new Exception("Invalid room position");
+                var room = new Room(direction, roomPosition);
+                room.SetRoomUnits(systemVessels[roomPosition]);
+
+                rooms.Add(room);
+            }
+            return new Vessel(rooms);
+        }
 
         public static Dictionary<RoomPosition, RoomUnit[]> GetSystemVessel(VesselType vesselType)
         {

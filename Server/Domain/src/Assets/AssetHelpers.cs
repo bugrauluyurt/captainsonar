@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Assets
 {
-    internal class Helpers
+    internal class AssetHelpers
     {
     }
 }

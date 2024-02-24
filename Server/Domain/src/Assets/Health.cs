@@ -18,7 +18,6 @@ namespace CaptainSonar.Assets
             {
                 throw new InvalidOperationException("Health is already depleted");
             }
-
             Slots.Increase();
         }
     }

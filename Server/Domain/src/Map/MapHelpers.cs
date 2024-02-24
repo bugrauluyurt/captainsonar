@@ -8,9 +8,9 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace CaptainSonar.Map
-{    
+{
 
-    class Helpers
+    class MapHelpers
     {
         public static string[] ColumnsAlphabetical = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"];
 
@@ -33,47 +33,47 @@ namespace CaptainSonar.Map
         {
             var column = coordinate.Column;
             var row = coordinate.Row;
-            if ((0 <= row && row < 5) && (0 <= column & column < 5))
+            if (0 <= row && row < 5 && (0 <= column & column < 5))
             {
                 return GridSection.One;
             }
 
-            if ((0 <= row && row < 5) && (5 <= column & column < 10))
+            if (0 <= row && row < 5 && (5 <= column & column < 10))
             {
                 return GridSection.Two;
             }
 
-            if ((0 <= row && row < 5) && (10 <= column & column < 15))
+            if (0 <= row && row < 5 && (10 <= column & column < 15))
             {
                 return GridSection.Three;
             }
 
-            if ((5 <= row && row < 10) && (0 <= column & column < 5))
+            if (5 <= row && row < 10 && (0 <= column & column < 5))
             {
                 return GridSection.Four;
             }
 
-            if ((5 <= row && row < 10) && (5 <= column & column < 10))
+            if (5 <= row && row < 10 && (5 <= column & column < 10))
             {
                 return GridSection.Five;
             }
 
-            if ((5 <= row && row < 10) && (10 <= column & column < 15))
+            if (5 <= row && row < 10 && (10 <= column & column < 15))
             {
                 return GridSection.Six;
             }
 
-            if ((10 <= row && row < 15) && (0 <= column & column < 5))
+            if (10 <= row && row < 15 && (0 <= column & column < 5))
             {
                 return GridSection.Seven;
             }
 
-            if ((10 <= row && row < 15) && (5 <= column & column < 10))
+            if (10 <= row && row < 15 && (5 <= column & column < 10))
             {
                 return GridSection.Eight;
             }
 
-            if ((10 <= row && row < 15) && (10 <= column & column < 15))
+            if (10 <= row && row < 15 && (10 <= column & column < 15))
             {
                 return GridSection.Nine;
             }
@@ -96,7 +96,7 @@ namespace CaptainSonar.Map
             {
                 return false;
             }
-            
+
             // @TODO: Player can not move onto his/her own path. The system needs to check it here.
             return !obstacles.Any(obstacle => obstacle[0] == coordinate.Row && obstacle[1] == coordinate.Column);
         }

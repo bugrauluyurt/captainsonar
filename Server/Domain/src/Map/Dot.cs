@@ -7,10 +7,21 @@ using static CaptainSonar.Map.Pathfinder;
 
 namespace CaptainSonar.Map
 {
-
-    internal class Dot(Coordinate location, GridSection section, bool hasObstacle = false) : Node(location, null, 0, 0)
+    internal class DotProps
     {
-        public readonly bool HasObstacle = hasObstacle;
+        public bool HasObstacle { get; set; }
+        public bool IsPositionResetAllowed { get; set; }
+
+        public DotProps()
+        {
+            HasObstacle = false;
+            IsPositionResetAllowed = true;
+        }
+    }
+
+    internal class Dot(Coordinate location, GridSection section, DotProps? props) : Node(location, null, 0, 0)
+    {
+        public readonly DotProps Props = props ?? new DotProps();
         public readonly GridSection Section = section;
 
         public override string ToString()
@@ -20,7 +31,7 @@ namespace CaptainSonar.Map
 
         public static string GetReadableLocation(Coordinate location)
         {
-            return Helpers.GetReadableCoordinate(location);
+            return MapHelpers.GetReadableCoordinate(location);
         }
     }
 }

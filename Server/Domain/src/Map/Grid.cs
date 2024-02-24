@@ -17,7 +17,7 @@ namespace CaptainSonar.Map
         public Grid(GridType mapType)
         {
             MapType = mapType;
-            Dimensions = Helpers.GetDimensionsByGridType(mapType);
+            Dimensions = MapHelpers.GetDimensionsByGridType(mapType);
             Obstacles = GridObstacles.GetObstaclesByGridType(mapType);
             _dots = CreateDots(Dimensions[0], Dimensions[1], Obstacles);
         }
@@ -34,8 +34,8 @@ namespace CaptainSonar.Map
                     var coordinate = new Coordinate(row, column);
                     // Not optimal, but it's a small matrix
                     var hasObstacle = obstacles.Any(obstacle => obstacle[0] == row && obstacle[1] == column);
-                    var mapSection = Helpers.GetGridSectionFromCoordinate(coordinate);
-                    matrix[row, column] = new Dot(coordinate, mapSection, hasObstacle);
+                    var mapSection = MapHelpers.GetGridSectionFromCoordinate(coordinate);
+                    matrix[row, column] = new Dot(coordinate, mapSection, new DotProps { HasObstacle = hasObstacle });
                 }
             }
             return matrix;
@@ -43,7 +43,7 @@ namespace CaptainSonar.Map
 
         public void PrintGrid(bool isSectionViewEnabled = false)
         {
-            
+
             if (_dots == null)
             {
                 throw new Exception("Map not initialized");
@@ -67,7 +67,7 @@ namespace CaptainSonar.Map
 
             for (int i = 0; i < _dots.GetLength(1); i++)
             {
-                Console.Write(Helpers.ColumnsAlphabetical[i] + " ");
+                Console.Write(MapHelpers.ColumnsAlphabetical[i] + " ");
             }
 
             // Move to the next line after headers
@@ -84,7 +84,7 @@ namespace CaptainSonar.Map
                 {
                     var dot = _dots[i, j];
                     var printedNonObstacle = isSectionViewEnabled ? ((int)dot.Section).ToString() : ".";
-                    var printValue = dot.HasObstacle ? "X" : printedNonObstacle;
+                    var printValue = dot.Props.HasObstacle ? "X" : printedNonObstacle;
                     Console.Write(printValue + " ");
                 }
                 // Move to the next line after each row
