@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Vessel
 {
-    internal class RoomUnit(string positionId, AssetType type, Direction direction, bool isMain, RoomUnitType? roomUnitType)
+    internal class RoomUnit(string positionId, AssetType type, RoomUnitType? roomUnitType)
     {
         public readonly string PositionId = positionId;
         private readonly AssetType _type = type;
-        private readonly Direction _unitDirection = direction;
         private readonly RoomUnitType? _roomUnitType = roomUnitType;
-        public readonly bool IsMain = isMain;
         private bool _isDamaged = false;
 
         public AssetType GetAssetType()
@@ -42,9 +40,11 @@ namespace CaptainSonar.Vessel
             return _isDamaged;
         }
 
-        public bool IsInRoom(Direction direction)
+        public bool IsUnlinked()
         {
-            return _unitDirection == direction;
+            return _roomUnitType == null;
         }
+
+        public bool IsLinked() => !IsUnlinked();
     }
 }

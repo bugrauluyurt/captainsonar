@@ -10,7 +10,6 @@ namespace CaptainSonar.Map
 
     internal class Dot(Coordinate location, GridSection section, bool hasObstacle = false) : Node(location, null, 0, 0)
     {
-        // public readonly Coordinate Location;
         public readonly bool HasObstacle = hasObstacle;
         public readonly GridSection Section = section;
 

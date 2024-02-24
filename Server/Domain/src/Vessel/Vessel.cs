@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Vessel
 {
-    internal class Vessel
+    internal class Vessel(List<Room> rooms)
     {
-        public Room[] Rooms = new Room[4];
+        public readonly List<Room> Rooms = rooms;
 
-        public void AddRoom(Room room, int index)
+        public bool IsAllRoomsDamaged()
         {
-            Rooms[index] = room;
+            return Rooms?.All(room => room.IsAllRoomUnitsDamaged()) ?? false;
         }
 
         public bool IsAllNuclearRoomUnitsDamaged()

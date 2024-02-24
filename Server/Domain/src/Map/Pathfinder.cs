@@ -117,20 +117,12 @@ namespace CaptainSonar.Map
             return neighbors;
         }
 
-        internal class Node
+        internal class Node(Coordinate location, Pathfinder.Node? parent, int gScore, int hScore)
         {
-            public Coordinate Location;
-            public Node? Parent;
-            public int GScore;
-            public int FScore;
-
-            public Node(Coordinate location, Node? parent, int gScore, int hScore)
-            {
-                Location = location;
-                Parent = parent;
-                GScore = gScore;
-                FScore = gScore + hScore;
-            }
+            public Coordinate Location = location;
+            public Node? Parent = parent;
+            public int GScore = gScore;
+            public int FScore = gScore + hScore;
         }
     }
 }

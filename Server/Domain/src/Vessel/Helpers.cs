@@ -10,55 +10,63 @@ namespace CaptainSonar.Vessel
 {
     class Helpers
     {
+        private static readonly Dictionary<RoomPosition, Direction> RoomPositionDirections = new()
+        {
+            { RoomPosition.Front, Direction.West },
+            { RoomPosition.FrontMiddle, Direction.North },
+            { RoomPosition.RearMiddle, Direction.South },
+            { RoomPosition.Rear, Direction.East }
+        };
+
         private static readonly Dictionary<VesselType, Dictionary<RoomPosition, RoomUnit[]>> SystemVessels = new() {
             {
                 VesselType.Submarine, new Dictionary<RoomPosition, RoomUnit[]>()
                 {
                     {
                         RoomPosition.Front, [
-                            new RoomUnit($"{RoomPosition.Front}:a", AssetType.Attack, Direction.West, true, RoomUnitType.Yellow),
-                            new RoomUnit($"{RoomPosition.Front}:b", AssetType.Passive, Direction.West, true, RoomUnitType.Yellow),
-                            new RoomUnit($"{RoomPosition.Front}:c", AssetType.Radar, Direction.West, true, RoomUnitType.Yellow),
-                            new RoomUnit($"{RoomPosition.Front}:d", AssetType.Radar, Direction.West, false, null),
-                            new RoomUnit($"{RoomPosition.Front}:e", AssetType.Nuclear, Direction.West, false, null),
-                            new RoomUnit($"{RoomPosition.Front}:f", AssetType.Nuclear, Direction.West, false, null),
-                            ]
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP1)}", AssetType.Attack, RoomUnitType.Yellow),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP2)}", AssetType.Passive, RoomUnitType.Yellow),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP3)}", AssetType.Radar, RoomUnitType.Yellow),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP4a)}", AssetType.Radar, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP4b)}", AssetType.Nuclear, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP4c)}", AssetType.Nuclear, null),
+                        ]
                     },
                     {
                         RoomPosition.FrontMiddle, [
-                            new RoomUnit($"{RoomPosition.FrontMiddle}:a", AssetType.Passive, Direction.North, true, RoomUnitType.Orange),
-                            new RoomUnit($"{RoomPosition.FrontMiddle}:b", AssetType.Attack, Direction.North, true, RoomUnitType.Orange),
-                            new RoomUnit($"{RoomPosition.FrontMiddle}:c", AssetType.Passive, Direction.North, true, RoomUnitType.Orange),
-                            new RoomUnit($"{RoomPosition.FrontMiddle}:d", AssetType.Radar, Direction.North, false, null),
-                            new RoomUnit($"{RoomPosition.FrontMiddle}:e", AssetType.Attack, Direction.North, false, null),
-                            new RoomUnit($"{RoomPosition.FrontMiddle}:f", AssetType.Nuclear, Direction.North, false, null),
-                            ]
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP1)}", AssetType.Passive, RoomUnitType.Orange),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP2)}", AssetType.Attack, RoomUnitType.Orange),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP3)}", AssetType.Passive, RoomUnitType.Orange),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP4a)}", AssetType.Radar, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP4b)}", AssetType.Attack, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP4c)}", AssetType.Nuclear, null),
+                        ]
                     },
                     {
                         RoomPosition.RearMiddle, [
-                            new RoomUnit($"{RoomPosition.RearMiddle}:a", AssetType.Radar, Direction.South, true, RoomUnitType.Black),
-                            new RoomUnit($"{RoomPosition.RearMiddle}:b", AssetType.Passive, Direction.South, true, RoomUnitType.Black),
-                            new RoomUnit($"{RoomPosition.RearMiddle}:c", AssetType.Attack, Direction.South, true, RoomUnitType.Black),
-                            new RoomUnit($"{RoomPosition.RearMiddle}:d", AssetType.Attack, Direction.South, false, null),
-                            new RoomUnit($"{RoomPosition.RearMiddle}:e", AssetType.Nuclear, Direction.South, false, null),
-                            new RoomUnit($"{RoomPosition.RearMiddle}:f", AssetType.Passive, Direction.South, false, null),
-                            ]
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP1)}", AssetType.Radar, RoomUnitType.Black),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP2)}", AssetType.Passive, RoomUnitType.Black),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP3)}", AssetType.Attack, RoomUnitType.Black),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP4a)}", AssetType.Attack, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP4b)}", AssetType.Nuclear, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP4c)}", AssetType.Passive, null),
+                        ]
                     },
                     {
                         RoomPosition.Rear, [
-                            new RoomUnit($"{RoomPosition.Rear}:a", AssetType.Radar, Direction.East, true, RoomUnitType.Orange),
-                            new RoomUnit($"{RoomPosition.Rear}:b", AssetType.Passive, Direction.East, true, RoomUnitType.Black),
-                            new RoomUnit($"{RoomPosition.Rear}:c", AssetType.Attack, Direction.East, true, RoomUnitType.Yellow),
-                            new RoomUnit($"{RoomPosition.Rear}:d", AssetType.Nuclear, Direction.East, false, null),
-                            new RoomUnit($"{RoomPosition.Rear}:e", AssetType.Radar, Direction.East, false, null),
-                            new RoomUnit($"{RoomPosition.Rear}:f", AssetType.Nuclear, Direction.East, false, null),
-                            ]
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP1)}", AssetType.Radar, RoomUnitType.Orange),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP2)}", AssetType.Passive, RoomUnitType.Black),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP3)}", AssetType.Attack, RoomUnitType.Yellow),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP4a)}", AssetType.Nuclear, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP4b)}", AssetType.Radar, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP4c)}", AssetType.Nuclear, null),
+                        ]
                     }
                 }
             }
         };
 
-        public static new Dictionary<RoomPosition, RoomUnit[]> GetSystemVessel(VesselType vesselType)
+        public static Dictionary<RoomPosition, RoomUnit[]> GetSystemVessel(VesselType vesselType)
         {
             if (!SystemVessels.TryGetValue(vesselType, out Dictionary<RoomPosition, RoomUnit[]>? value))
             {
@@ -68,12 +76,26 @@ namespace CaptainSonar.Vessel
             return value;
         }
 
-        public static bool IsAllNuclearRoomsDamaged(Vessel vessel)
+        public static Direction? GetRoomDirectionByPosition(RoomPosition roomPosition)
         {
-            return vessel.Rooms.All(room =>
-            {
-                return room.GetRoomUnits().All(roomUnit => roomUnit.IsDamaged());
-            });
+            return RoomPositionDirections.TryGetValue(roomPosition, out Direction value) ? value : null;
+        }
+
+
+        // @INFO: Intentionally kept separate from the RoomUnit class
+        public static string GetRoomUnitPositionId(RoomPosition roomPosition, RoomUnitPosition roomUnitPosition)
+        {
+            return $"{roomPosition}:{roomUnitPosition}";
+        }
+
+        public static RoomPosition GetRoomPositionByRoomUnitPositionId(string roomUnitPositionId)
+        {
+            return (RoomPosition)Enum.Parse(typeof(RoomPosition), roomUnitPositionId.Split(":")[0]);
+        }
+
+        public static RoomUnitPosition GetRoomUnitPositionByRoomUnitPositionId(string roomUnitPositionId)
+        {
+            return (RoomUnitPosition)Enum.Parse(typeof(RoomUnitPosition), roomUnitPositionId.Split(":")[1]);
         }
     }
 }

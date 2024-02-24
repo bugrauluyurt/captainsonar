@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Vessel
 {
-    internal class Room(Direction direction)
+    internal class Room(Direction direction, RoomPosition position)
     {
+        public readonly RoomPosition Position = position;
         private readonly Direction _direction = direction;
         private IEnumerable<RoomUnit> _roomUnits = new RoomUnit[6];
 
@@ -38,9 +39,9 @@ namespace CaptainSonar.Vessel
             return _roomUnits?.Where(roomUnit => roomUnit.GetRoomUnitType() == null).All(roomUnit => roomUnit.IsDamaged()) ?? false;
         }
 
-        public bool IsAllMainRoomUnitsDamaged()
+        public bool IsAllLinkedRoomUnitsDamaged()
         {
-            return _roomUnits?.Where(roomUnit => roomUnit.IsMain).All(roomUnit => roomUnit.IsDamaged()) ?? false;
+            return _roomUnits?.Where(roomUnit => roomUnit.IsLinked()).All(roomUnit => roomUnit.IsDamaged()) ?? false;
         }
 
         public bool IsAllNuclearRoomUnitsDamaged()
