@@ -36,11 +36,10 @@ namespace CaptainSonar.Assets
         }
     }
 
-    internal abstract class Asset(Player owner, AssetType assetType, ActionType actionType, int size)
+    internal abstract class Asset(Player owner, AssetType assetType, int size)
     {
         private readonly Player _owner = owner;
         public readonly AssetType AssetType = assetType;
-        public readonly ActionType ActionType = actionType;
         public AssetSlots Slots = new(size);
 
         public Player GetOwner() => _owner;

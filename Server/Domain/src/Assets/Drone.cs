@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Assets
 {
-    internal class Drone(Player owner) : Asset(owner, AssetType.Radar, ActionType.Drone, 4)
+    internal class Drone(Player owner) : Asset(owner, AssetType.Radar, 4)
     {
     }
 }

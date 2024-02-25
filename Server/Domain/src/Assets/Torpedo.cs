@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Assets
 {
-    internal class Torpedo(Player owner) : Asset(owner, AssetType.Attack, ActionType.None, 3)
+    internal class Torpedo(Player owner) : Asset(owner, AssetType.Attack, 3)
     {
     }
 }

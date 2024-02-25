@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Assets
 {
-    internal class Health(Player owner, int slotSize = 4) : Asset(owner, AssetType.Health, ActionType.None, slotSize)
+    internal class Health(Player owner, int slotSize = 4) : Asset(owner, AssetType.Health, slotSize)
     {
         public bool IsAlive => !Slots.IsFilled;
         public bool IsDead => !IsAlive;

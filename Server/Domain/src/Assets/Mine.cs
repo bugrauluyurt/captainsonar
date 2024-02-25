@@ -8,7 +8,7 @@ using CaptainSonar.Map;
 
 namespace CaptainSonar.Assets
 {
-    internal class Mine(Player owner) : Asset(owner, AssetType.Attack, ActionType.None, 3)
+    internal class Mine(Player owner) : Asset(owner, AssetType.Attack, 3)
     {
     }
 }
