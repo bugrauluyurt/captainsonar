@@ -108,7 +108,7 @@ namespace CaptainSonar.Map
                 int newColumn = location.Column + move[1];
 
                 if (newRow >= 0 && newRow < rowCount && newColumn >= 0 && newColumn < columnCount &&
-                    !matrix[newRow, newColumn].HasObstacle)
+                    !matrix[newRow, newColumn].Props.HasObstacle)
                 {
                     neighbors.Add(new Node(new Coordinate(newRow, newColumn), null, 0, 0));
                 }
