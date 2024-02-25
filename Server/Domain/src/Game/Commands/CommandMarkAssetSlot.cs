@@ -7,12 +7,12 @@ using CaptainSonar.Assets;
 
 namespace CaptainSonar.Game.Commands
 {
-    internal class CommandUseAssetData
+    internal class CommandMarkAssetSlotData
     {
         public AssetName AssetName { get; }
     }
 
-    internal class CommandUseAsset(CommandUseAssetData data) : Command<CommandUseAssetData>(data, CommandName.UseAsset)
+    internal class CommandMarkAssetSlot(CommandMarkAssetSlotData data) : Command<CommandMarkAssetSlotData>(data, CommandName.MarkAssetSlot)
     {
     }
 }

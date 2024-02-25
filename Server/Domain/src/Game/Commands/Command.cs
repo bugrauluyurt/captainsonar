@@ -14,7 +14,7 @@ namespace CaptainSonar.Game.Commands
     // 3. Command sequence is important. The server will validate the command sequence and if it is not in the correct order, it will return an error in the diagnostics array.
     // if an error is found, command excution will stop and valid state up to that point will be returned. Therefore diagnostics array will contain the error message and the command that caused the error.
     // IMPORTANT: Other player's location is not known to the player. Estimated location will be handled by the client ONLY.
-    enum CommandName
+    internal enum CommandName
     {
         Move, // Move self
         Surface,
@@ -24,7 +24,8 @@ namespace CaptainSonar.Game.Commands
         ReportSonar, // Report the sonar result to the other player (1 true, 1 false)
         ReportSection, // Report the section of the map to the other player (1 true, 1 false)
     }
-    internal class Command<T>(T? data, CommandName name) where T : class
+
+    internal abstract class Command<T>(T? data, CommandName name) where T : class
     {
         public required CommandName Name { get; set; } = name;
         public required T? Data { get; set; } = data;
