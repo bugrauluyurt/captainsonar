@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Assets
 {
-    internal class Silence(Player owner) : Asset(owner, AssetType.Passive, ActionType.Silence, 6)
+    internal class Silence(Player owner) : Asset(owner, AssetType.Passive, AssetName.Silence, 6)
     {
     }
 }

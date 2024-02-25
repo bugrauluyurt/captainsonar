@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Assets
 {
-    internal class Sonar(Player owner) : Asset(owner, AssetType.Radar, ActionType.Sonar, 3)
+    internal class Sonar(Player owner) : Asset(owner, AssetType.Radar, AssetName.Sonar, 3)
     {
     }
 }

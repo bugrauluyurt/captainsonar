@@ -24,9 +24,9 @@ namespace CaptainSonar.Game.Commands
         ReportSonar, // Report the sonar result to the other player (1 true, 1 false)
         ReportSection, // Report the section of the map to the other player (1 true, 1 false)
     }
-    internal class Command<T>(T data, CommandName name) where T : class
+    internal class Command<T>(T? data, CommandName name) where T : class
     {
         public required CommandName Name { get; set; } = name;
-        public required T Data { get; set; } = data;
+        public required T? Data { get; set; } = data;
     }
 }
