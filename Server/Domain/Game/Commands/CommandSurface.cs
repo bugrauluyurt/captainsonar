@@ -8,8 +8,8 @@ namespace CaptainSonar.Game.Commands
 {
     internal class CommandSurfaceData
     {
-        public required int Column { get; set; }
-        public required int Row { get; set; }
+        public int Column { get; set; }
+        public int Row { get; set; }
     }
 
     internal class CommandSurface() : Command<CommandSurfaceData>(null, CommandName.Surface)

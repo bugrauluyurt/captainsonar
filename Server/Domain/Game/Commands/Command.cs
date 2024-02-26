@@ -27,7 +27,7 @@ namespace CaptainSonar.Game.Commands
 
     internal abstract class Command<T>(T? data, CommandName name) where T : class
     {
-        public required CommandName Name { get; set; } = name;
-        public required T? Data { get; set; } = data;
+        public CommandName Name { get; set; } = name;
+        public T? Data { get; set; } = data;
     }
 }

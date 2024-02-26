@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CaptainSonar.Game;
 using static CaptainSonar.Map.Pathfinder;
 
 namespace CaptainSonar.Map
 {
+    internal class DotMine(Coordinate location, TeamName owner)
+    {
+        public Coordinate Location { get; set; } = location;
+        public TeamName Owner { get; set; } = owner;
+    }
     internal class DotProps
     {
         public bool HasObstacle { get; set; }
@@ -23,6 +29,7 @@ namespace CaptainSonar.Map
     {
         public readonly DotProps Props = props ?? new DotProps();
         public readonly GridSection Section = section;
+        public readonly List<DotMine> Mines = [];
 
         public override string ToString()
         {
