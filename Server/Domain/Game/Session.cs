@@ -10,6 +10,5 @@ namespace CaptainSonar.Game
     {
         public required string Id { get; set; } = id;
         public required string OwnerId { get; set; } = ownerId;
-        public List<Team> Teams { get; set; } = [];
     }
 }

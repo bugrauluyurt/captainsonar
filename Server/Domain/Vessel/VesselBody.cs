@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Vessel
 {
-    internal class Vessel(List<Room> rooms)
+    internal class VesselBody(List<Room> rooms)
     {
         public readonly List<Room> Rooms = rooms;
 

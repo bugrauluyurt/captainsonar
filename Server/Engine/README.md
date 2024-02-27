@@ -12,7 +12,7 @@ Position: {
 		dots: Dot[]
 	}
 }
-Vessels: Vessel[]
+Vessels: VesselBody[]
 Assets: Asset[]
 Status: GameStatus // Prestart, Continued, Over,
 Victor; null | TeamName
