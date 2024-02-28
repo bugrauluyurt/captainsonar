@@ -20,8 +20,9 @@ namespace CaptainSonar.Engine
     internal class TeamState
     {
         public List<Dot> Dots { get; set; } = [];
-        public List<Asset> Assets { get; set; } = [];
+        public IEnumerable<Asset> Assets { get; set; } = [];
         public VesselBody? Vessel { get; set; } = null;
+        public IEnumerable<Player> Players { get; set; } = [];
     }
 
     internal class Turn
@@ -36,6 +37,6 @@ namespace CaptainSonar.Engine
         public Dictionary<TeamName, TeamState> TeamState { get; set; } = [];
         public TeamName? Victor { get; set; }
         public Turn? Turn { get; set; }
-        public GameStatus Status { get; set; }
+        public GameStatus Status { get; set; } = GameStatus.NotStarted;
     }
 }

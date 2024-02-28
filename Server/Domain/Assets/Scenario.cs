@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Assets
 {
-    internal class Scenario(Player owner) : Asset(owner, AssetType.Passive, AssetName.Scenario, 6)
+    internal class Scenario(int slotSize = 6) : Asset(AssetType.Passive, AssetName.Scenario, slotSize)
     {
     }
 }

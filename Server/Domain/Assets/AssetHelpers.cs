@@ -8,5 +8,15 @@ namespace CaptainSonar.Assets
 {
     internal class AssetHelpers
     {
+        public static List<Asset> CreateAssets() =>
+        [
+            new Health(),
+            new Drone(),
+            new Mine(),
+            new Silence(),
+            new Scenario(),
+            new Torpedo(),
+            new Sonar(),
+        ];
     }
 }

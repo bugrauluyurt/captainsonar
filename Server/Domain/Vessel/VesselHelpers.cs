@@ -66,7 +66,7 @@ namespace CaptainSonar.Vessel
             }
         };
 
-        public static Vessel CreateVessel(VesselType vesselType)
+        public static VesselBody CreateVessel(VesselType vesselType)
         {
             var systemVessels = GetSystemVessel(vesselType);
             List<Room> rooms = [];
@@ -78,7 +78,7 @@ namespace CaptainSonar.Vessel
 
                 rooms.Add(room);
             }
-            return new Vessel(rooms);
+            return new VesselBody(rooms);
         }
 
         public static Dictionary<RoomPosition, RoomUnit[]> GetSystemVessel(VesselType vesselType)
