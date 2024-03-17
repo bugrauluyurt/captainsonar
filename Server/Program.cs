@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using CaptainSonar.Map;
+
+using CaptainSonar.Common.Domain.Map;
 
 var grid = new Grid(GridType.Alpha);
 grid.PrintGrid();

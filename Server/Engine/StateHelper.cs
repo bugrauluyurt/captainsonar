@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CaptainSonar.Game;
-using CaptainSonar.Vessel;
-using CaptainSonar.Map;
-using CaptainSonar.Assets;
 using CaptainSonar.Common.Utils;
+using CaptainSonar.Common.Domain.Vessel;
+using CaptainSonar.Common.Domain.Game;
+using CaptainSonar.Common.Domain.Map;
 
 namespace CaptainSonar.Engine
 {
-    internal class StateHelper
+    static class StateHelper
     {
         public static State CreateState()
         {

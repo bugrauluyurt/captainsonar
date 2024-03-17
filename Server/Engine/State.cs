@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CaptainSonar.Game;
-using CaptainSonar.Vessel;
-using CaptainSonar.Map;
-using CaptainSonar.Assets;
+using CaptainSonar.Common.Domain.Assets;
+using CaptainSonar.Common.Domain.Game;
+using CaptainSonar.Common.Domain.Map;
+using CaptainSonar.Common.Domain.Vessel;
 
 namespace CaptainSonar.Engine
 {
-    internal enum GameStatus
+    enum GameStatus
     {
         NotStarted,
         InProgress,
         Finished
     }
 
-    internal class TeamState
+    class TeamState
     {
         public List<Dot> Dots { get; set; } = [];
         public IEnumerable<Asset> Assets { get; set; } = [];
@@ -27,13 +27,13 @@ namespace CaptainSonar.Engine
         public List<Dot> DotsInfo { get; set; } = []; // the list of dots that are marked for information purposes. These dots can be enenmy location or any other.
     }
 
-    internal class Turn
+    class Turn
     {
         public TeamName Team { get; set; }
         public Player? Player { get; set; } = null;
     }
 
-    internal class State
+    class State
     {
         public Session? Session { get; set; }
         public Dictionary<TeamName, TeamState> TeamState { get; set; } = [];
