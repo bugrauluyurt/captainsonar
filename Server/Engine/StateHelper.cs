@@ -7,6 +7,7 @@ using CaptainSonar.Game;
 using CaptainSonar.Vessel;
 using CaptainSonar.Map;
 using CaptainSonar.Assets;
+using CaptainSonar.Common.Utils;
 
 namespace CaptainSonar.Engine
 {
@@ -90,5 +91,64 @@ namespace CaptainSonar.Engine
 
             return state;
         }
+
+        public static State AddInfoDots(State state, TeamName team, IEnumerable<Dot> dots)
+        {
+            var currentInfoDotsStringified = state.TeamState[team].DotsInfo.Select((dot) => dot.ToString()).ToList();
+            // The user should always send the complete list of info dots. No partial updates are allowed. The dots with the same location are filtered out automatically.
+            state.TeamState[team].DotsInfo = dots.Where((dot) => !currentInfoDotsStringified.Contains(dot.ToString())).ToList();
+            return state;
+        }
+
+        /*
+        Commands List
+        - Map_Move (Team, Direction) => Player is going to send a direction. The system will find the next dot.
+        validation =>
+            - Check if the dot is valid.
+            - The next dot should not be out of boundaries.
+            - The player can not move to a dot that has an obstacle.
+            - [Optional] If any of the players move on top of the other. The players are moved
+            - After a player moves, the system should check the next turn. If the player has not crossed any asset slot or has not crossed any room unit, then the same has the turn,
+            otherwise, the turn is next player's.
+        - Map_ReportSonarPosition
+        - RoomUnit_Damage
+        - AssetSlot_Increase
+        - AssetSlot_Use (data sent changes according to the used asset type)
+        - Info_AddDots (user adds info dots on the map to store information about the enemy's location or other things)
+         */
+
+        /*
+       Commands List
+       - STATE MACHINE
+           After each command, the system should generate a new state and upsert a diagnostics message into the list.
+           In this diagnostics message list, the things has automatically happened should be listed.
+
+           The system should generate an object like this:
+           {
+               State: State,
+               Diagnostics: [
+                   {
+                       Message: "The player has moved to the next dot.",
+                       Data: any
+                   },
+                   {
+                       Message: "Team A's ship is damaged.",
+                       Data: any
+                   },
+                   {
+                       Message: "Game ended. Team A won.",
+                       Data: any
+                   },
+                   {
+                       Message: "Command is not valid. The player can not move to the specified direction.",
+                       Data: any
+                   }
+               ]
+           }
+
+           Here are some examples, we need to develop a chart for every scenario:
+           - If the next dot is a mine, the system should damage the other player automatically and write a system diagnostics message. The mine should be removed from the dot object.
+           -
+        */
     }
 }
