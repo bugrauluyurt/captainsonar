@@ -22,7 +22,7 @@ namespace CaptainSonar.Engine
         public List<Dot> Dots { get; set; } = [];
         public IEnumerable<Asset> Assets { get; set; } = [];
         public VesselBody? Vessel { get; set; } = null;
-        public IEnumerable<Player> Players { get; set; } = [];
+        public List<Player> Players { get; } = [];
     }
 
     internal class Turn
