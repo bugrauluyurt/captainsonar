@@ -35,5 +35,8 @@ namespace CaptainSonar.Engine
 
             return state;
         }
+
+        // AddPlayer => Adds a player to a team
+        // StartGame => Sets the turn
     }
 }
