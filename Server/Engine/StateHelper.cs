@@ -101,6 +101,10 @@ namespace CaptainSonar.Engine
 
         /*
         Commands List
+        - Session_Start (Player) => The system is going to start the game. The player is going to be the first player of the first team. Create the state and the session.
+        - Session_Quit => Player is going to quit the game.
+        - Session_Join => (SessionID) => Player joins the game with the session id. The player should be invited to the session by the creator. The other player should try to join the session with the SessionID.
+        - Session_Invite => (PlayerId, session) => The player is going to invite another player to the game.
         - Map_Move (Team, Direction) => Player is going to send a direction. The system will find the next dot.
         validation =>
             - Check if the dot is valid.
@@ -109,10 +113,13 @@ namespace CaptainSonar.Engine
             - [Optional] If any of the players move on top of the other. The players are moved
             - After a player moves, the system should check the next turn. If the player has not crossed any asset slot or has not crossed any room unit, then the same has the turn,
             otherwise, the turn is next player's.
-        - Map_ReportSonarPosition
+        - Map_Surface => Team submarine surfaces and same player needs to report the position of his own submarine.
+        - Report_AfterSonar => A player is going to report One True, One False location item to the other player.
+        - Report_AfterDrone => A player is going to report the section of the map to the other player after a drone.
+        - Report_AfterSurface => Player reports the position of himself.
         - RoomUnit_Damage
-        - AssetSlot_Increase
-        - AssetSlot_Use (data sent changes according to the used asset type)
+        - AssetSlots_Increase
+        - AssetSlots_Use (data sent changes according to the used asset type)
         - Info_AddDots (user adds info dots on the map to store information about the enemy's location or other things)
          */
 

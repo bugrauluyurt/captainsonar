@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Domain.Commands;
 
 namespace CaptainSonar.Common.Domain.Commands
 {
@@ -14,18 +15,8 @@ namespace CaptainSonar.Common.Domain.Commands
     // 3. Command sequence is important. The server will validate the command sequence and if it is not in the correct order, it will return an error in the diagnostics array.
     // if an error is found, command excution will stop and valid state up to that point will be returned. Therefore diagnostics array will contain the error message and the command that caused the error.
     // IMPORTANT: Other player's location is not known to the player. Estimated location will be handled by the client ONLY.
-    public enum CommandName
-    {
-        Move, // Move self
-        Surface,
-        UseAsset,
-        MarkAssetSlot, // Mark the asset slot from the asset board
-        MarkRoomUnit, // Mark the room unit from the room board
-        ReportSonar, // Report the sonar result to the other player (1 true, 1 false)
-        ReportSection, // Report the section of the map to the other player (1 true, 1 false)
-    }
 
-    public abstract class Command<T>(T? data, CommandName name) where T : class
+    public abstract class Command<T>(T? data, CommandName name) : ICommandBase where T : class
     {
         public CommandName Name { get; set; } = name;
         public T? Data { get; set; } = data;

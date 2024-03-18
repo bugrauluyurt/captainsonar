@@ -10,5 +10,6 @@ namespace CaptainSonar.Common.Domain.Game
     {
         public required string Id { get; set; } = id;
         public required string OwnerId { get; set; } = ownerId;
+        public string? InvitedId { get; set; } = null;
     }
 }
