@@ -9,7 +9,7 @@ namespace CaptainSonar.Server.Engine
 {
     public static class StateValidator
     {
-        public static StateExecutionStep ValidateStartGame(StateExecutionStep stateExecutionStep, Player player)
+        public static StateExecutionStep ValidateSessionStart(StateExecutionStep stateExecutionStep, Player player)
         {
             var state = stateExecutionStep.State;
 
@@ -31,6 +31,41 @@ namespace CaptainSonar.Server.Engine
             {
                 exceptions.Add(new InvalidOperationException("Players are already added to the game. State is invalid."));
             }
+
+            List<StateDiagnostic> diagnosticsNext = stateExecutionStep.StateDiagnostics;
+            for (int i = 0; i < exceptions.Count; i++)
+            {
+                diagnosticsNext.Add(new StateDiagnostic { Exception = exceptions[i] });
+            }
+
+            return stateExecutionStep with
+            {
+                StateDiagnostics = diagnosticsNext,
+                HasDiagnosticsErrors = exceptions.Count > 0
+            };
+        }
+
+        public static StateExecutionStep ValidateSessionQuit(StateExecutionStep stateExecutionStep, Player player)
+        {
+            var state = stateExecutionStep.State;
+
+            List<SystemException> exceptions = [];
+
+            if (player is null)
+            {
+                exceptions.Add(new InvalidOperationException("Player is required to quit the game"));
+            }
+
+            // @INFO: Teams are allowed to have no players. At this point the session owner can send another invitation to another player.
+            // if (player is not null)
+            // {
+            //     var team1Players = state.TeamState[TeamName.Team1].Players;
+            //     var team2Players = state.TeamState[TeamName.Team2].Players;
+            //     if ((!team1Players.Contains(player) && team1Players.Count == 1) || (!team2Players.Contains(player) && team1Players.Count == 1))
+            //     {
+            //         exceptions.Add(new InvalidOperationException("Player is the last player in the game"));
+            //     }
+            // }
 
             List<StateDiagnostic> diagnosticsNext = stateExecutionStep.StateDiagnostics;
             for (int i = 0; i < exceptions.Count; i++)

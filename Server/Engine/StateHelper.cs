@@ -42,16 +42,33 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
-        public static State StartGame(State state, Player? player)
+        public static State RemovePlayerFromTeam(State state, TeamName team, Player player)
         {
-            var playerInTurn = (player ?? state.TeamState[TeamName.Team1].Players.First()) ?? throw new InvalidOperationException("Player is required to start the game");
+            state.TeamState[team].Players.Remove(player);
+            return state;
+        }
 
+        public static State RemovePlayerFromGame(State state, Player player)
+        {
+            if (state.TeamState[TeamName.Team1].Players.Contains(player))
+            {
+                state.TeamState[TeamName.Team1].Players.Remove(player);
+            }
+            else if (state.TeamState[TeamName.Team2].Players.Contains(player))
+            {
+                state.TeamState[TeamName.Team2].Players.Remove(player);
+            }
+
+            return state;
+        }
+
+        public static State StartGame(State state)
+        {
             state.Status = GameStatus.InProgress;
 
             state.Turn = new Turn
             {
                 Team = TeamName.Team1,
-                Player = playerInTurn
             };
 
             return state;
@@ -61,33 +78,6 @@ namespace CaptainSonar.Server.Engine
         {
             state.Status = GameStatus.Finished;
             state.Victor = victor;
-            return state;
-        }
-
-        public static State NextTurn(State state)
-        {
-            // @TODO: Turn might still stay at the current team if the team needs to take another action.
-            // The system needs to do a validation here.
-            var team1 = state.TeamState[TeamName.Team1];
-            var team2 = state.TeamState[TeamName.Team2];
-
-            if (state.Turn?.Team == TeamName.Team1)
-            {
-                state.Turn = new Turn
-                {
-                    Team = TeamName.Team2,
-                    Player = team2.Players.First()
-                };
-            }
-            else
-            {
-                state.Turn = new Turn
-                {
-                    Team = TeamName.Team1,
-                    Player = team1.Players.First()
-                };
-            }
-
             return state;
         }
 
@@ -102,9 +92,10 @@ namespace CaptainSonar.Server.Engine
         /*
         Commands List
         - Session_Start (Player) => The system is going to start the game. The player is going to be the first player of the first team. Create the state and the session.
-        - Session_Quit => Player is going to quit the game.
+        - Session_End => Owner of the session ends the game for good.
+        - Session_Quit => Player is going to quit the game. Another player can be invited to the game at this point.
         - Session_Join => (SessionID) => Player joins the game with the session id. The player should be invited to the session by the creator. The other player should try to join the session with the SessionID.
-        - Session_Invite => (PlayerId, session) => The player is going to invite another player to the game.
+        - [DOES NOT AFFECT THE STATE] Session_Invite => (PlayerId, session) => The player is going to invite another player to the game.
         - Map_Move (Team, Direction) => Player is going to send a direction. The system will find the next dot.
         validation =>
             - Check if the dot is valid.

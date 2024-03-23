@@ -30,7 +30,6 @@ namespace CaptainSonar.Server.Engine
     public class Turn
     {
         public TeamName Team { get; set; }
-        public Player? Player { get; set; } = null;
     }
 
     public class State

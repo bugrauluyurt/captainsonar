@@ -30,19 +30,39 @@ namespace CaptainSonar.Engine
 
     static class StateMachine
     {
-        public static StateExecutionStep ExecStartGame(
+        public static StateExecutionStep ExecSessionStart(
             Player player,
             StateExecutionStep stateExecutionStep)
         {
+
             // Validation
-            StateExecutionStep stepNext = StateValidator.ValidateStartGame(stateExecutionStep, player);
+            StateExecutionStep stepNext = StateValidator.ValidateSessionStart(stateExecutionStep, player);
+
             if (stepNext.HasDiagnosticsErrors)
             {
                 return stepNext;
             }
             // Execution
             stepNext.State = StateHelper.AddPlayerToTeam(stepNext.State, TeamName.Team1, player);
-            stepNext.State = StateHelper.StartGame(stepNext.State, player);
+            stepNext.State = StateHelper.StartGame(stepNext.State);
+
+
+            return stepNext;
+        }
+
+        public static StateExecutionStep ExecSessionEnd(
+            Player player,
+            StateExecutionStep stateExecutionStep)
+        {
+            // Validation
+            StateExecutionStep stepNext = StateValidator.ValidateSessionQuit(stateExecutionStep, player);
+            if (stepNext.HasDiagnosticsErrors)
+            {
+                return stepNext;
+            }
+
+            // Execution
+            stepNext.State = StateHelper.RemovePlayerFromGame(stepNext.State, player);
 
             return stepNext;
         }
@@ -54,11 +74,15 @@ namespace CaptainSonar.Engine
         {
             StateExecutionStep stateExecutionStepNext = command switch
             {
-                CommandStartGame commandStartGame => ExecStartGame(commandStartGame.Data!.Player, stateExecutionStep),
+                CommandSessionStart commandStartGame => ExecSessionStart(commandStartGame.Data!.Player, stateExecutionStep),
                 _ => throw new InvalidOperationException("Invalid command")
             };
 
             return stateExecutionStepNext;
         }
+
+        // @TODO: Either inside this method or within the higher level functions we need to validate the given order of commands. Order might be faulty.
+        // @TODO: The order should determine the turn of the game.
+        // Write a method called ExecCommands => This should take a list commands and generate a new state. Returna a StateExecutionStep.
     }
 }
