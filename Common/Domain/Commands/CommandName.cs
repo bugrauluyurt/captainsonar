@@ -1,4 +1,4 @@
-namespace Common.Domain.Commands
+namespace CaptainSonar.Common.Domain.Commands
 {
     public enum CommandName
     {

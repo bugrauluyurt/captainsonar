@@ -8,16 +8,16 @@ using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Common.Domain.Map;
 using CaptainSonar.Common.Domain.Vessel;
 
-namespace CaptainSonar.Engine
+namespace CaptainSonar.Server.Engine
 {
-    enum GameStatus
+    public enum GameStatus
     {
         NotStarted,
         InProgress,
         Finished
     }
 
-    class TeamState
+    public class TeamState
     {
         public List<Dot> Dots { get; set; } = [];
         public IEnumerable<Asset> Assets { get; set; } = [];
@@ -27,15 +27,14 @@ namespace CaptainSonar.Engine
         public List<Dot> DotsInfo { get; set; } = []; // the list of dots that are marked for information purposes. These dots can be enenmy location or any other.
     }
 
-    class Turn
+    public class Turn
     {
         public TeamName Team { get; set; }
         public Player? Player { get; set; } = null;
     }
 
-    class State
+    public class State
     {
-        public Session? Session { get; set; }
         public Dictionary<TeamName, TeamState> TeamState { get; set; } = [];
         public TeamName? Victor { get; set; }
         public Turn? Turn { get; set; }

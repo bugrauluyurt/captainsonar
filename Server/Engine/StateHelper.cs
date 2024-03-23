@@ -8,7 +8,7 @@ using CaptainSonar.Common.Domain.Vessel;
 using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Common.Domain.Map;
 
-namespace CaptainSonar.Engine
+namespace CaptainSonar.Server.Engine
 {
     static class StateHelper
     {
