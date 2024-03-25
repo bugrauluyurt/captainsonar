@@ -126,5 +126,6 @@ namespace CaptainSonar.Common.Domain.Map
         public Node? Parent = parent;
         public int GScore = gScore;
         public int FScore = gScore + hScore;
+        public GridSection Section = MapHelpers.GetGridSectionFromCoordinate(location);
     }
 }

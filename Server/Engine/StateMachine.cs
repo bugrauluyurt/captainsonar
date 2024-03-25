@@ -11,12 +11,18 @@ using CaptainSonar.Common.Utils;
 using CaptainSonar.Server.Engine;
 using Common.Domain.Commands;
 
-namespace CaptainSonar.Engine
+namespace CaptainSonar.Server.Engine
 {
+    public enum DiagnosticsCode
+    {
+        DamageRecieved = 0
+    };
+
     public class StateDiagnostic
     {
         public SystemException? Exception { get; set; }
         public string? DiagnosticMessage { get; set; }
+        public int? DiagnosticsCode { get; set; }
     }
 
     // Every execution returns a new state step
@@ -28,44 +34,130 @@ namespace CaptainSonar.Engine
         public bool HasDiagnosticsErrors { get; init; } = false; // Means that the state has been violated. Game is not valid.
     }
 
-    static class StateMachine
+    public static class StateMachineHelper
+    {
+        public static StateExecutionStep ExecStep(
+            Func<StateExecutionStep> validatorFn,
+            Func<StateExecutionStep> executorFn
+        )
+        {
+            StateExecutionStep validatedStep = validatorFn();
+            if (validatedStep.HasDiagnosticsErrors)
+            {
+                return validatedStep;
+            }
+
+            return executorFn();
+        }
+
+        public static StateExecutionStep ComposeState(
+            StateExecutionStep stepExecutionStep,
+            List<Func<State, State>> composeFunctions
+        )
+        {
+            State stateNext = stepExecutionStep.State;
+            foreach (var composeFunction in composeFunctions)
+            {
+                stateNext = composeFunction(stateNext);
+            }
+
+            return stepExecutionStep with { State = stateNext };
+        }
+    }
+
+    public static class StateMachine
     {
         public static StateExecutionStep ExecSessionStart(
-            Player player,
-            StateExecutionStep stateExecutionStep)
+            StateExecutionStep stateExecutionStep,
+            CommandSessionStart command)
         {
+            var player = command.Data.Player;
 
-            // Validation
-            StateExecutionStep stepNext = StateValidator.ValidateSessionStart(stateExecutionStep, player);
-
-            if (stepNext.HasDiagnosticsErrors)
-            {
-                return stepNext;
-            }
-            // Execution
-            stepNext.State = StateHelper.AddPlayerToTeam(stepNext.State, TeamName.Team1, player);
-            stepNext.State = StateHelper.StartGame(stepNext.State);
-
-
-            return stepNext;
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateSessionStart(stateExecutionStep, player),
+                // Executor
+                () =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        stateExecutionStep,
+                        [
+                            (stateNext) => StateHelper.AddPlayerToTeam(stateNext, TeamName.Team1, player),
+                            (stateNext) => StateHelper.StartGame(stateExecutionStep.State)
+                        ]
+                    );
+                }
+            );
         }
 
         public static StateExecutionStep ExecSessionEnd(
-            Player player,
-            StateExecutionStep stateExecutionStep)
+            StateExecutionStep stateExecutionStep,
+            CommandSessionEnd command)
         {
-            // Validation
-            StateExecutionStep stepNext = StateValidator.ValidateSessionQuit(stateExecutionStep, player);
-            if (stepNext.HasDiagnosticsErrors)
-            {
-                return stepNext;
-            }
+            var player = command.Data.Player;
 
-            // Execution
-            stepNext.State = StateHelper.RemovePlayerFromGame(stepNext.State, player);
-
-            return stepNext;
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateSessionEnd(stateExecutionStep, player),
+                // Executor
+                () =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        stateExecutionStep,
+                        [
+                            (stateNext) => StateHelper.RemovePlayerFromGame(stateNext, player),
+                        ]
+                    );
+                }
+            );
         }
+
+        public static StateExecutionStep ExecSessionQuit(
+            StateExecutionStep stateExecutionStep,
+            CommandSessionQuit command)
+        {
+            var player = command.Data.Player;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateSessionQuit(stateExecutionStep, player),
+                // Executor
+                () =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        stateExecutionStep,
+                        [
+                            (stateNext) => StateHelper.RemovePlayerFromGame(stateNext, player),
+                        ]
+                    );
+                }
+            );
+        }
+
+        public static StateExecutionStep ExecSessionJoin(
+            StateExecutionStep stateExecutionStep,
+            CommandSessionJoin command)
+        {
+            var player = command.Data.Player;
+            var teamName = command.Data.TeamName;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateSessionJoin(stateExecutionStep, player, teamName),
+                // Executor
+                () =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        stateExecutionStep,
+                        [
+                            (stateNext) => StateHelper.AddPlayerToTeam(stateNext, teamName, player),
+                        ]
+                    );
+                }
+            );
+        }
+
+        // @TODO: Complete the other commands
 
         // ExecCommand takes a command and executes it on the current state while updates the state and the commands list.
         public static StateExecutionStep ExecCommand(
@@ -74,7 +166,10 @@ namespace CaptainSonar.Engine
         {
             StateExecutionStep stateExecutionStepNext = command switch
             {
-                CommandSessionStart commandStartGame => ExecSessionStart(commandStartGame.Data!.Player, stateExecutionStep),
+                CommandSessionStart commandStartGame => ExecSessionStart(stateExecutionStep, commandStartGame),
+                CommandSessionEnd commandEndGame => ExecSessionEnd(stateExecutionStep, commandEndGame),
+                CommandSessionQuit commandQuitGame => ExecSessionQuit(stateExecutionStep, commandQuitGame),
+                CommandSessionJoin commandSessionJoin => ExecSessionJoin(stateExecutionStep, commandSessionJoin),
                 _ => throw new InvalidOperationException("Invalid command")
             };
 

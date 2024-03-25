@@ -16,9 +16,9 @@ namespace CaptainSonar.Common.Domain.Commands
     // if an error is found, command excution will stop and valid state up to that point will be returned. Therefore diagnostics array will contain the error message and the command that caused the error.
     // IMPORTANT: Other player's location is not known to the player. Estimated location will be handled by the client ONLY.
 
-    public abstract class Command<T>(T? data, CommandName name) : ICommandBase where T : class
+    public abstract class Command<T>(CommandName name, T data) : ICommandBase where T : class
     {
         public CommandName Name { get; set; } = name;
-        public T? Data { get; set; } = data;
+        public T Data { get; set; } = data;
     }
 }

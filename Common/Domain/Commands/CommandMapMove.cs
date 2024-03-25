@@ -4,15 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using CaptainSonar.Common.Domain.Commands;
 using CaptainSonar.Common.Domain.Game;
+using CaptainSonar.Common.Domain.Map;
 
 namespace CaptainSonar.Common.Domain.Commands
 {
-    public class CommandSessionStartData
+    public class CommandMapMoveData
     {
         public Player Player { get; set; } = null!;
+        public Direction Direction { get; set; }
     }
 
-    public class CommandSessionStart(CommandSessionStartData data) : Command<CommandSessionStartData>(CommandName.Session_Start, data)
+    public class CommandMapMove(CommandMapMoveData data) : Command<CommandMapMoveData>(CommandName.Map_Move, data)
     {
     }
 }

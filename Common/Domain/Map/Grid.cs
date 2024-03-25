@@ -34,15 +34,15 @@ namespace CaptainSonar.Common.Domain.Map
                     var coordinate = new Coordinate(row, column);
                     // Not optimal, but it's a small matrix
                     var hasObstacle = obstacles.Any(obstacle => obstacle[0] == row && obstacle[1] == column);
-                    var mapSection = MapHelpers.GetGridSectionFromCoordinate(coordinate);
-                    matrix[row, column] = new Dot(coordinate, mapSection, new DotProps { HasObstacle = hasObstacle });
+                    matrix[row, column] = new Dot(coordinate, new DotProps { HasObstacle = hasObstacle });
                 }
             }
             return matrix;
         }
 
-        public void PrintGrid(bool isSectionViewEnabled = false)
+        public void PrintGrid(List<Dot>? dotsMarked = null, bool isSectionViewEnabled = false)
         {
+            dotsMarked ??= [];
 
             if (_dots == null)
             {
@@ -84,6 +84,11 @@ namespace CaptainSonar.Common.Domain.Map
                 {
                     var dot = _dots[i, j];
                     var printedNonObstacle = isSectionViewEnabled ? ((int)dot.Section).ToString() : ".";
+                    // If the dot is marked, print * instead of .
+                    if (dotsMarked.Any(d => d.Location.Row == i && d.Location.Column == j))
+                    {
+                        printedNonObstacle = "O";
+                    }
                     var printValue = dot.Props.HasObstacle ? "X" : printedNonObstacle;
                     Console.Write(printValue + " ");
                 }

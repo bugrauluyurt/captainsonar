@@ -7,6 +7,7 @@ using CaptainSonar.Common.Utils;
 using CaptainSonar.Common.Domain.Vessel;
 using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Common.Domain.Map;
+using CaptainSonar.Common.Domain.Assets;
 
 namespace CaptainSonar.Server.Engine
 {
@@ -17,8 +18,12 @@ namespace CaptainSonar.Server.Engine
             TeamState team1State = new();
             TeamState team2State = new();
 
+            // Team1 state
             team1State.Vessel = VesselHelpers.CreateVessel(VesselType.Submarine);
+            team1State.Assets = AssetHelpers.CreateAssets();
+            // Team2 state
             team2State.Vessel = VesselHelpers.CreateVessel(VesselType.Submarine);
+            team1State.Assets = AssetHelpers.CreateAssets();
 
             var state = new State
             {
@@ -108,6 +113,7 @@ namespace CaptainSonar.Server.Engine
         - Report_AfterSonar => A player is going to report One True, One False location item to the other player.
         - Report_AfterDrone => A player is going to report the section of the map to the other player after a drone.
         - Report_AfterSurface => Player reports the position of himself.
+        - Game_End_Turn => The player ends the turn.
         - RoomUnit_Damage
         - AssetSlots_Increase
         - AssetSlots_Use (data sent changes according to the used asset type)

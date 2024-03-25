@@ -7,12 +7,13 @@ using CaptainSonar.Common.Domain.Game;
 
 namespace CaptainSonar.Common.Domain.Commands
 {
-    public class CommandSessionStartData
+    public class CommandSessionJoinData
     {
         public Player Player { get; set; } = null!;
+        public TeamName TeamName { get; set; }
     }
 
-    public class CommandSessionStart(CommandSessionStartData data) : Command<CommandSessionStartData>(CommandName.Session_Start, data)
+    public class CommandSessionJoin(CommandSessionJoinData data) : Command<CommandSessionJoinData>(CommandName.Session_Join, data)
     {
     }
 }

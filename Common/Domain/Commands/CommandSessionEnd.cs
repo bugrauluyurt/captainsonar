@@ -7,12 +7,12 @@ using CaptainSonar.Common.Domain.Game;
 
 namespace CaptainSonar.Common.Domain.Commands
 {
-    public class CommandSessionQuitData
+    public class CommandSessionEndData
     {
         public Player Player { get; } = null!;
     }
 
-    public class CommandSessionQuit(CommandSessionQuitData data) : Command<CommandSessionQuitData>(CommandName.Session_Quit, data)
+    public class CommandSessionEnd(CommandSessionEndData data) : Command<CommandSessionEndData>(CommandName.Session_End, data)
     {
     }
 }
