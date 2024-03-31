@@ -30,7 +30,7 @@ Console.WriteLine($"The shortest path from {startCoordinate.Row}:{startCoordinat
 // [1] State execution step initialization
 StateExecutionStep stateExecutionStep = new()
 {
-    State = StateHelper.CreateState(),
+    State = StateHelper.CreateState(grid),
     Commands = []
 };
 

@@ -13,7 +13,7 @@ namespace CaptainSonar.Server.Engine
 {
     static class StateHelper
     {
-        public static State CreateState()
+        public static State CreateState(Grid grid)
         {
             TeamState team1State = new();
             TeamState team2State = new();
@@ -35,7 +35,8 @@ namespace CaptainSonar.Server.Engine
                     { TeamName.Team1, team1State },
                     { TeamName.Team2, team2State }
                 },
-                Status = GameStatus.NotStarted
+                Status = GameStatus.NotStarted,
+                Grid = grid
             };
 
             return state;

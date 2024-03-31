@@ -80,12 +80,15 @@ namespace CaptainSonar.Common.Domain.Map
             return GridSection.None;
         }
 
-        public static bool IsCoordinateInBounds(Coordinate coordinate)
+        public static bool IsCoordinateInBounds(Coordinate coordinate, GridType gridType)
         {
-            return coordinate.Row >= 0 && coordinate.Row < RowCount && coordinate.Column >= 0 && coordinate.Column < ColumnCount;
+            var dimensions = GetDimensionsByGridType(gridType);
+            var rowCount = dimensions[0];
+            var columnCount = dimensions[1];
+            return coordinate.Row >= 0 && coordinate.Row < rowCount && coordinate.Column >= 0 && coordinate.Column < columnCount;
         }
 
-        public static bool IsCoordinateOnPath(Coordinate coordinate, Dot[] dots)
+        public static bool IsCoordinateOnPath(Coordinate coordinate, List<Dot> dots)
         {
             return dots.Any(dot => dot.Location.Row == coordinate.Row && dot.Location.Column == coordinate.Column);
         }
@@ -99,9 +102,9 @@ namespace CaptainSonar.Common.Domain.Map
         public static bool CanMove(
             Coordinate coordinateProspect,
             GridType mapType,
-            Dot[] dots)
+            List<Dot> dots)
         {
-            return IsCoordinateInBounds(coordinateProspect) &&
+            return IsCoordinateInBounds(coordinateProspect, mapType) &&
                    !IsCoordinateOnObstacle(coordinateProspect, mapType) &&
                    !IsCoordinateOnPath(coordinateProspect, dots);
         }

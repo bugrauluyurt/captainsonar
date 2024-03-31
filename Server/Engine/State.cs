@@ -38,5 +38,6 @@ namespace CaptainSonar.Server.Engine
         public TeamName? Victor { get; set; }
         public Turn? Turn { get; set; }
         public GameStatus Status { get; set; } = GameStatus.NotStarted;
+        public Grid Grid { get; init; } = null!;
     }
 }
