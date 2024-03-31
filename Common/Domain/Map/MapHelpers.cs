@@ -80,24 +80,30 @@ namespace CaptainSonar.Common.Domain.Map
             return GridSection.None;
         }
 
-        // @TODO: CanMove should be moved to a different class
-        public static bool CanMove(Coordinate coordinate, GridType mapType)
+        public static bool IsCoordinateInBounds(Coordinate coordinate)
+        {
+            return coordinate.Row >= 0 && coordinate.Row < RowCount && coordinate.Column >= 0 && coordinate.Column < ColumnCount;
+        }
+
+        public static bool IsCoordinateOnPath(Coordinate coordinate, Dot[] dots)
+        {
+            return dots.Any(dot => dot.Location.Row == coordinate.Row && dot.Location.Column == coordinate.Column);
+        }
+
+        public static bool IsCoordinateOnObstacle(Coordinate coordinate, GridType mapType)
         {
             var obstacles = GridObstacles.GetObstaclesByGridType(mapType);
-            var row = coordinate.Row;
-            if (row < 0 || row >= RowCount)
-            {
-                return false;
-            }
+            return obstacles.Any(obstacle => obstacle[0] == coordinate.Row && obstacle[1] == coordinate.Column);
+        }
 
-            var column = coordinate.Column;
-            if (column < 0 || column >= ColumnCount)
-            {
-                return false;
-            }
-
-            // @TODO: Player can not move onto his/her own path. The system needs to check it here.
-            return !obstacles.Any(obstacle => obstacle[0] == coordinate.Row && obstacle[1] == coordinate.Column);
+        public static bool CanMove(
+            Coordinate coordinateProspect,
+            GridType mapType,
+            Dot[] dots)
+        {
+            return IsCoordinateInBounds(coordinateProspect) &&
+                   !IsCoordinateOnObstacle(coordinateProspect, mapType) &&
+                   !IsCoordinateOnPath(coordinateProspect, dots);
         }
     }
 }
