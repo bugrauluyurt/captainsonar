@@ -22,7 +22,7 @@ namespace CaptainSonar.Server.Engine
     {
         public SystemException? Exception { get; set; }
         public string? DiagnosticMessage { get; set; }
-        public int? DiagnosticsCode { get; set; }
+        public int? DiagnosticCode { get; set; }
     }
 
     // Every execution returns a new state step
@@ -30,7 +30,8 @@ namespace CaptainSonar.Server.Engine
     {
         public State State { get; set; } = null!; // Current state
         public List<ICommandBase> Commands { get; init; } = []; // Existing previous commands. Pipe an empty list if new.
-        public List<StateDiagnostic> StateDiagnostics { get; init; } = []; // Existing diagnostics. Pipe an empty list if new.
+        public List<StateDiagnostic> StateDiagnosticsExceptions { get; init; } = []; // Existing diagnostics. Pipe an empty list if new.
+        public List<StateDiagnostic> StateDiagnosticsInformatives { get; init; } = []; // Existing diagnostics. Pipe an empty list if new.
         public bool HasDiagnosticsErrors { get; init; } = false; // Means that the state has been violated. Game is not valid.
     }
 
@@ -38,7 +39,7 @@ namespace CaptainSonar.Server.Engine
     {
         public static StateExecutionStep ExecStep(
             Func<StateExecutionStep> validatorFn,
-            Func<StateExecutionStep> executorFn
+            Func<StateExecutionStep, StateExecutionStep> executorFn
         )
         {
             StateExecutionStep validatedStep = validatorFn();
@@ -47,7 +48,7 @@ namespace CaptainSonar.Server.Engine
                 return validatedStep;
             }
 
-            return executorFn();
+            return executorFn(validatedStep);
         }
 
         public static StateExecutionStep ComposeState(
@@ -77,13 +78,13 @@ namespace CaptainSonar.Server.Engine
                 // Validator
                 () => StateValidator.ValidateSessionStart(stateExecutionStep, player),
                 // Executor
-                () =>
+                (nextStep) =>
                 {
                     return StateMachineHelper.ComposeState(
-                        stateExecutionStep,
+                        nextStep,
                         [
                             (stateNext) => StateHelper.AddPlayerToTeam(stateNext, TeamName.Team1, player),
-                            (stateNext) => StateHelper.StartGame(stateExecutionStep.State)
+                            (stateNext) => StateHelper.StartGame(nextStep.State)
                         ]
                     );
                 }
@@ -100,10 +101,10 @@ namespace CaptainSonar.Server.Engine
                 // Validator
                 () => StateValidator.ValidateSessionEnd(stateExecutionStep, player),
                 // Executor
-                () =>
+                (nextStep) =>
                 {
                     return StateMachineHelper.ComposeState(
-                        stateExecutionStep,
+                        nextStep,
                         [
                             (stateNext) => StateHelper.RemovePlayerFromGame(stateNext, player),
                         ]
@@ -122,10 +123,10 @@ namespace CaptainSonar.Server.Engine
                 // Validator
                 () => StateValidator.ValidateSessionQuit(stateExecutionStep, player),
                 // Executor
-                () =>
+                (nextStep) =>
                 {
                     return StateMachineHelper.ComposeState(
-                        stateExecutionStep,
+                        nextStep,
                         [
                             (stateNext) => StateHelper.RemovePlayerFromGame(stateNext, player),
                         ]
@@ -145,10 +146,10 @@ namespace CaptainSonar.Server.Engine
                 // Validator
                 () => StateValidator.ValidateSessionJoin(stateExecutionStep, player, teamName),
                 // Executor
-                () =>
+                (nextStep) =>
                 {
                     return StateMachineHelper.ComposeState(
-                        stateExecutionStep,
+                        nextStep,
                         [
                             (stateNext) => StateHelper.AddPlayerToTeam(stateNext, teamName, player),
                         ]
@@ -156,6 +157,8 @@ namespace CaptainSonar.Server.Engine
                 }
             );
         }
+
+        // @TODO: Complete ExecMapMove (If ValidateMapMove InformativeDiagnostics list has 2001, 2002 or 2003 diagnostics code, then the players should take a damage)
 
         // @TODO: Complete the other commands
 

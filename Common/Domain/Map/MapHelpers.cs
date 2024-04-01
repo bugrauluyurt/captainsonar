@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CaptainSonar.Common.Domain.Game;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -108,5 +109,18 @@ namespace CaptainSonar.Common.Domain.Map
                    !IsCoordinateOnObstacle(coordinateProspect, mapType) &&
                    !IsCoordinateOnPath(coordinateProspect, dots);
         }
+
+        public static bool IsCoordinateOnAnyTeamsMine(Coordinate coordinate, Grid grid)
+        {
+            var dot = grid.GetDot(coordinate);
+            return dot.IsMineExist(TeamName.Team1) || dot.IsMineExist(TeamName.Team2);
+        }
+
+        public static bool IsCoordinateOnATeamMine(Coordinate coordinate, Grid grid, TeamName teamName)
+        {
+            var dot = grid.GetDot(coordinate);
+            return dot.IsMineExist(teamName);
+        }
+
     }
 }

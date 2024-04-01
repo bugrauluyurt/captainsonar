@@ -43,20 +43,23 @@ namespace CaptainSonar.Server.Engine
             List<(int, string)> informatives
             )
         {
-            List<StateDiagnostic> diagnosticsNext = stateExecutionStep.StateDiagnostics;
+            List<StateDiagnostic> diagnosticsExceptionsNext = stateExecutionStep.StateDiagnosticsExceptions;
             for (int i = 0; i < exceptions.Count; i++)
             {
-                diagnosticsNext.Add(new StateDiagnostic { Exception = exceptions[i] });
+                diagnosticsExceptionsNext.Add(new StateDiagnostic { Exception = exceptions[i] });
             }
+
+            List<StateDiagnostic> diagnosticsInformativesNext = stateExecutionStep.StateDiagnosticsInformatives;
 
             for (int i = 0; i < informatives.Count; i++)
             {
-                diagnosticsNext.Add(new StateDiagnostic { DiagnosticMessage = informatives[i].Item2, DiagnosticsCode = informatives[i].Item1 });
+                diagnosticsInformativesNext.Add(new StateDiagnostic { DiagnosticMessage = informatives[i].Item2, DiagnosticCode = informatives[i].Item1 });
             }
 
             return stateExecutionStep with
             {
-                StateDiagnostics = diagnosticsNext,
+                StateDiagnosticsExceptions = diagnosticsExceptionsNext,
+                StateDiagnosticsInformatives = diagnosticsInformativesNext,
                 HasDiagnosticsErrors = exceptions.Count > 0
             };
         }

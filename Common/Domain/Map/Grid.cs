@@ -40,6 +40,11 @@ namespace CaptainSonar.Common.Domain.Map
             return matrix;
         }
 
+        public Dot GetDot(Coordinate coordinate)
+        {
+            return _dots[coordinate.Row, coordinate.Column];
+        }
+
         public void PrintGrid(List<Dot>? dotsMarked = null, bool isSectionViewEnabled = false)
         {
             dotsMarked ??= [];

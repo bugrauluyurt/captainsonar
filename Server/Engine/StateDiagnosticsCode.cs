@@ -8,6 +8,7 @@ namespace CaptainSonar.Server.Engine
     public class StateDiagnosticsCode
     {
         private static readonly Dictionary<int, string> DiagnosticMessage = new() {
+            // Exceptions
             { 1001, "Player is required to start the game" },
             { 1002, "Game is already finished" },
             { 1003, "Game is already started" },
@@ -19,6 +20,10 @@ namespace CaptainSonar.Server.Engine
             { 1009, "Coordinate is on top of an obstacle" },
             { 1010, "Coordinate is on top of player's own path" },
             { 1011, "Moving to the coordinate is not allowed" },
+            // Informatives
+            { 2001, "Coordinate is on a mine" },
+            { 2002, "Coordinate is on a self put mine" },
+            { 2003, "Coordinate is on an enemy mine" },
         };
 
         public static string GetDiagnosticMessage(int code)

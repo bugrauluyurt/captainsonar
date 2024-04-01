@@ -111,7 +111,20 @@ namespace CaptainSonar.Server.Engine
                     !MapHelpers.CanMove(coordinate, gridType, state.TeamState[teamName].Dots),
                     1011
                 )
-            ], []);
+            ], [
+                (
+                    MapHelpers.IsCoordinateOnAnyTeamsMine(coordinate, grid),
+                    2001
+                ),
+                (
+                    MapHelpers.IsCoordinateOnATeamMine(coordinate, grid, teamName),
+                    2002
+                ),
+                (
+                    MapHelpers.IsCoordinateOnATeamMine(coordinate, grid, teamName.GetEnemyTeamName()),
+                    2003
+                )
+            ]);
         }
 
         // ValidateMapMove(StateExecutionStep stateExecutionStep, TeamName teamName, Coordinate coordinate)

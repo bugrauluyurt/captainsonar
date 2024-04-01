@@ -95,6 +95,11 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
+        public static bool HasMine(Grid grid, Coordinate coordinate, TeamName teamName)
+        {
+            return grid.GetDot(coordinate).IsMineExist(teamName);
+        }
+
         /*
         Commands List
         - Session_Start (Player) => The system is going to start the game. The player is going to be the first player of the first team. Create the state and the session.

@@ -27,7 +27,7 @@ namespace CaptainSonar.Common.Domain.Map
     public class Dot(Coordinate location, DotProps? props) : Node(location, null, 0, 0)
     {
         public readonly DotProps Props = props ?? new DotProps();
-        public readonly List<DotMine> Mines = [];
+        private readonly List<DotMine> _mines = [];
         public readonly List<string> Notes = []; // user can store a list of notes for each dot.
         public string Color { get; set; } = "transparent"; // this is mostly used for the client side to show the color of the dot. Anything can be stored here.
 
@@ -41,5 +41,21 @@ namespace CaptainSonar.Common.Domain.Map
             return MapHelpers.GetReadableCoordinate(location);
         }
 
+        public bool IsMineExist(TeamName owner)
+        {
+            return _mines.Any(mine => mine.Owner == owner);
+        }
+
+        public void AddMine(TeamName owner)
+        {
+            if (!IsMineExist(owner))
+            {
+                _mines.Add(new DotMine(Location, owner));
+            }
+            else
+            {
+                throw new Exception($"Mine already exists for team {owner}");
+            }
+        }
     }
 }
