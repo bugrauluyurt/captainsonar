@@ -87,14 +87,6 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
-        public static State AddInfoDots(State state, TeamName team, IEnumerable<Dot> dots)
-        {
-            var currentInfoDotsStringified = state.TeamState[team].DotsInfo.Select((dot) => dot.ToString()).ToList();
-            // The user should always send the complete list of info dots. No partial updates are allowed. The dots with the same location are filtered out automatically.
-            state.TeamState[team].DotsInfo = dots.Where((dot) => !currentInfoDotsStringified.Contains(dot.ToString())).ToList();
-            return state;
-        }
-
         public static State MoveTeam(State state, TeamName team, Coordinate lastKnownCoordinate, Direction direction)
         {
             var newCoordinate = MapHelpers.GetNextCoordinateFromDirection(lastKnownCoordinate, direction);
