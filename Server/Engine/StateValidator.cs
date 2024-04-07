@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Common.Domain.Map;
+using CaptainSonar.Common.Domain.Vessel;
 
 namespace CaptainSonar.Server.Engine
 {
@@ -88,33 +89,80 @@ namespace CaptainSonar.Server.Engine
         public static StateExecutionStep ValidateMapMove(
             StateExecutionStep stateExecutionStep,
             TeamName teamName,
-            Coordinate coordinate)
+            Direction direction)
         {
             var state = stateExecutionStep.State;
             var grid = state.Grid;
             var gridType = grid.MapType;
+            var lastKnownCoordinate = state.TeamState[teamName].Dots.Last().Location;
+            var nextCoordinate = MapHelpers.GetNextCoordinateFromDirection(lastKnownCoordinate, direction);
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
-                    !MapHelpers.IsCoordinateInBounds(coordinate, gridType),
+                    !MapHelpers.IsCoordinateInBounds(nextCoordinate, gridType),
                     1008
                 ),
                 (
-                    MapHelpers.IsCoordinateOnObstacle(coordinate, gridType),
+                    MapHelpers.IsCoordinateOnObstacle(nextCoordinate, gridType),
                     1009
                 ),
                 (
-                    MapHelpers.IsCoordinateOnPath(coordinate, state.TeamState[teamName].Dots),
+                    MapHelpers.IsCoordinateOnPath(nextCoordinate, state.TeamState[teamName].Dots),
                     1010
                 ),
                 (
-                    !MapHelpers.IsCoordinateAdjacent(coordinate, state.TeamState[teamName].Dots.Last().Location),
+                    !MapHelpers.IsCoordinateAdjacent(nextCoordinate, state.TeamState[teamName].Dots.Last().Location),
                     1012
                 ),
                 (
-                    !MapHelpers.CanMove(coordinate, gridType, state.TeamState[teamName].Dots),
+                    !MapHelpers.CanMove(nextCoordinate, gridType, state.TeamState[teamName].Dots),
                     1011
                 )
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateMapSurface(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName)
+        {
+            var state = stateExecutionStep.State;
+            var lastKnownDot = state.TeamState[teamName].Dots.Last();
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    lastKnownDot is null,
+                    1012
+                ),
+                (
+                    !lastKnownDot?.Props.CanSurface ?? true,
+                    1011
+                )
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateRoomUnitDamage(
+            StateExecutionStep stateExecutionStep,
+            string roomUnitPositionId)
+        {
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    !RoomUnit.IsRoomUnitPositionIdValid(roomUnitPositionId),
+                    1013
+                ),
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateRoomUnitsRepair(
+            StateExecutionStep stateExecutionStep,
+            List<string> roomUnitPositionIds)
+        {
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    !roomUnitPositionIds.All(RoomUnit.IsRoomUnitPositionIdValid),
+                    1013
+                ),
             ], []);
         }
 

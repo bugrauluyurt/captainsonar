@@ -36,7 +36,7 @@ namespace CaptainSonar.Common.Domain.Vessel
 
         public bool IsAllUnlinkedRoomUnitsDamaged()
         {
-            return _roomUnits?.Where(roomUnit => roomUnit.GetRoomUnitType() == null).All(roomUnit => roomUnit.IsDamaged()) ?? false;
+            return _roomUnits?.Where(roomUnit => roomUnit.RoomUnitType == RoomUnitType.Unlinked).All(roomUnit => roomUnit.IsDamaged()) ?? false;
         }
 
         public bool IsAllLinkedRoomUnitsDamaged()
@@ -62,13 +62,18 @@ namespace CaptainSonar.Common.Domain.Vessel
 
         public void RepairAllUnlinkedRoomUnits()
         {
-            _roomUnits?.Where(roomUnit => roomUnit.GetRoomUnitType() == null).ToList().ForEach(roomUnit => roomUnit.Repair());
+            _roomUnits?.Where(roomUnit => roomUnit.RoomUnitType == RoomUnitType.Unlinked).ToList().ForEach(roomUnit => roomUnit.Repair());
         }
 
         public void DamageRoomUnitByPositionId(string positionId)
         {
             var roomUnit = _roomUnits?.FirstOrDefault(roomUnit => roomUnit.PositionId == positionId);
             roomUnit?.Damage();
+        }
+
+        public static bool IsRoomPositionValid(string roomPositionString)
+        {
+            return Enum.TryParse<RoomPosition>(roomPositionString, out _);
         }
     }
 }

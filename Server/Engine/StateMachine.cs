@@ -165,25 +165,93 @@ namespace CaptainSonar.Server.Engine
         {
             var teamName = command.Data.TeamName;
             var direction = command.Data.Direction;
-            var lastKnownCoordinate = stateExecutionStep.State.TeamState[teamName].Dots.Last().Location;
+            //
 
             return StateMachineHelper.ExecStep(
                 // Validator
-                () => StateValidator.ValidateMapMove(stateExecutionStep, teamName, lastKnownCoordinate),
+                () => StateValidator.ValidateMapMove(stateExecutionStep, teamName, direction),
                 // Executor
                 (nextStep) =>
                 {
                     return StateMachineHelper.ComposeState(
                         nextStep,
                         [
-                            (stateNext) =>  StateHelper.MoveTeam(stateNext, teamName, lastKnownCoordinate, direction)
+                            (stateNext) =>  StateHelper.MoveTeam(stateNext, teamName, direction)
                         ]
                     );
                 }
             );
         }
 
-        // @TODO: Complete the other commands
+        public static StateExecutionStep ExecMapSurface(
+            StateExecutionStep stateExecutionStep,
+            CommandMapSurface command)
+        {
+            var teamName = command.Data.TeamName;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateMapSurface(stateExecutionStep, teamName),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.SurfaceTeam(stateNext, teamName)
+                        ]
+                    );
+                }
+            );
+        }
+
+        public static StateExecutionStep ExecRoomUnitDamage(
+            StateExecutionStep stateExecutionStep,
+            CommandRoomUnitDamage command)
+        {
+            var teamName = command.Data.TeamName;
+            var roomUnitPositionId = command.Data.RoomUnitPositionId;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateRoomUnitDamage(stateExecutionStep, roomUnitPositionId),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.DamageRoomUnit(stateNext, teamName, roomUnitPositionId)
+                        ]
+                    );
+                }
+            );
+        }
+
+        public static StateExecutionStep ExecRoomUnitsRepair(
+            StateExecutionStep stateExecutionStep,
+            CommandRoomUnitsRepair command)
+        {
+            var teamName = command.Data.TeamName;
+            var roomUnitPositionIds = command.Data.RoomUnitPositionIds;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateRoomUnitsRepair(stateExecutionStep, roomUnitPositionIds),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.RepairRoomUnits(stateNext, teamName, roomUnitPositionIds)
+                        ]
+                    );
+                }
+            );
+        }
+
+        // @TODO: Write the other command execution logic here.
 
         // ExecCommand takes a command and executes it on the current state while updates the state and the commands list.
         public static StateExecutionStep ExecCommand(

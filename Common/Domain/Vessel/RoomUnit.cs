@@ -7,21 +7,16 @@ using System.Threading.Tasks;
 
 namespace CaptainSonar.Common.Domain.Vessel
 {
-    public class RoomUnit(string positionId, AssetType type, RoomUnitType? roomUnitType)
+    public class RoomUnit(string positionId, AssetType type, RoomUnitType roomUnitType)
     {
         public readonly string PositionId = positionId;
         private readonly AssetType _type = type;
-        private readonly RoomUnitType? _roomUnitType = roomUnitType;
+        public readonly RoomUnitType RoomUnitType = roomUnitType;
         private bool _isDamaged = false;
 
         public AssetType GetAssetType()
         {
             return _type;
-        }
-
-        public RoomUnitType? GetRoomUnitType()
-        {
-            return _roomUnitType;
         }
 
         public void Damage()
@@ -41,9 +36,17 @@ namespace CaptainSonar.Common.Domain.Vessel
 
         public bool IsUnlinked()
         {
-            return _roomUnitType == null;
+            return RoomUnitType == RoomUnitType.Unlinked;
         }
 
         public bool IsLinked() => !IsUnlinked();
+
+        public static bool IsRoomUnitPositionIdValid(string roomUnitPositionId)
+        {
+            string[]? positions = roomUnitPositionId.Split(":");
+            string roomPositionString = positions.ElementAtOrDefault(0) ?? "";
+            string roomUnitPositionString = positions.ElementAtOrDefault(1) ?? "";
+            return VesselHelpers.IsRoomUnitPositionStringValid(roomUnitPositionString) && VesselHelpers.IsRoomUnitPositionStringValid(roomPositionString);
+        }
     }
 }

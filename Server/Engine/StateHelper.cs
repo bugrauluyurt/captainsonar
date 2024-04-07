@@ -15,15 +15,16 @@ namespace CaptainSonar.Server.Engine
     {
         public static State CreateState(Grid grid)
         {
-            TeamState team1State = new();
-            TeamState team2State = new();
-
-            // Team1 state
-            team1State.Vessel = VesselHelpers.CreateVessel(VesselType.Submarine);
-            team1State.Assets = AssetHelpers.CreateAssets();
-            // Team2 state
-            team2State.Vessel = VesselHelpers.CreateVessel(VesselType.Submarine);
-            team1State.Assets = AssetHelpers.CreateAssets();
+            TeamState team1State = new()
+            {
+                Vessel = VesselHelpers.CreateVessel(VesselType.Submarine),
+                Assets = AssetHelpers.CreateAssets()
+            };
+            TeamState team2State = new()
+            {
+                Vessel = VesselHelpers.CreateVessel(VesselType.Submarine),
+                Assets = AssetHelpers.CreateAssets()
+            };
 
             var state = new State
             {
@@ -87,12 +88,40 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
-        public static State MoveTeam(State state, TeamName team, Coordinate lastKnownCoordinate, Direction direction)
+        public static State MoveTeam(State state, TeamName teamName, Direction direction)
         {
+            var lastKnownCoordinate = state.TeamState[teamName].Dots.Last().Location;
             var newCoordinate = MapHelpers.GetNextCoordinateFromDirection(lastKnownCoordinate, direction);
             var grid = state.Grid;
             var dot = MapHelpers.GetDotFromCoordinate(newCoordinate, grid);
-            state.TeamState[team].Dots.Add(dot.Clone());
+            state.TeamState[teamName].Dots.Add(dot.Clone());
+            return state;
+        }
+
+        public static State SurfaceTeam(State state, TeamName teamName)
+        {
+            // Repair all damage
+            state.TeamState[teamName].Vessel.RepairAllRooms();
+            // Clearn the path. Remove all the dots from the path.
+            state.TeamState[teamName].Dots.Clear();
+            return state;
+        }
+
+        public static State DamageRoomUnit(State state, TeamName teamName, string roomUnitPositionId)
+        {
+            state.TeamState[teamName].Vessel.DamageRoomUnitByPositionId(roomUnitPositionId);
+            return state;
+        }
+
+        public static State RepairRoomUnit(State state, TeamName teamName, string roomUnitPositionId)
+        {
+            state.TeamState[teamName].Vessel.RepairRoomUnitByPositionId(roomUnitPositionId);
+            return state;
+        }
+
+        public static State RepairRoomUnits(State state, TeamName teamName, List<string> roomUnitPositionIds)
+        {
+            state.TeamState[teamName].Vessel.RepairRoomUnitsByPositionIds(roomUnitPositionIds);
             return state;
         }
 
@@ -108,15 +137,16 @@ namespace CaptainSonar.Server.Engine
             - Check if the dot is valid.
             - The next dot should not be out of boundaries.
             - The player can not move to a dot that has an obstacle.
-            - [Optional] If any of the players move on top of the other. The players are moved
+            - [OPTIONAL] If any of the players move on top of the other. The players are moved
             - After a player moves, the system should check the next turn. If the player has not crossed any asset slot or has not crossed any room unit, then the same has the turn,
             otherwise, the turn is next player's.
         - Map_Surface => Team submarine surfaces and same player needs to report the position of his own submarine.
-        - Report_AfterSonar => A player is going to report One True, One False location item to the other player.
-        - Report_AfterDrone => A player is going to report the section of the map to the other player after a drone.
-        - Report_AfterSurface => Player reports the position of himself.
-        - Game_End_Turn => The player ends the turn.
+        - [PHASE_2] Report_AfterSonar => A player is going to report One True, One False location item to the other player.
+        - [PHASE_2] Report_AfterDrone => A player is going to report the section of the map to the other player after a drone.
+        - [PHASE_2] Report_AfterSurface => Player reports the position of himself.
+        - [PHASE_2] Game_End_Turn => The player ends the turn.
         - RoomUnit_Damage
+        - RoomUnit_Repair => A list of roomUnits can be sent here for clearing. Or the
         - AssetSlots_Increase
         - AssetSlots_Use (data sent changes according to the used asset type)
         - Info_AddDots (user adds info dots on the map to store information about the enemy's location or other things)

@@ -13,6 +13,7 @@ namespace CaptainSonar.Common.Domain.Commands
         Report_AfterDrone,
         Report_AfterSurface,
         RoomUnit_Damage,
+        RoomUnits_Repair,
         AssetSlots_Increase,
         AssetSlots_Use,
         Info_AddDots,

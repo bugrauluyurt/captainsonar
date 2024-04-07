@@ -13,4 +13,12 @@ namespace CaptainSonar.Common.Domain.Vessel
         RearMiddle,
         Rear,
     }
+
+    public static class RoomPositionExtensions
+    {
+        public static bool IsRoomPositionValid(string roomPosition)
+        {
+            return Enum.TryParse<RoomPosition>(roomPosition, out _);
+        }
+    }
 }

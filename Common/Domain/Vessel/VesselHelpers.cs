@@ -29,9 +29,9 @@ namespace CaptainSonar.Common.Domain.Vessel
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP1)}", AssetType.Attack, RoomUnitType.Yellow),
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP2)}", AssetType.Passive, RoomUnitType.Yellow),
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP3)}", AssetType.Radar, RoomUnitType.Yellow),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP4a)}", AssetType.Radar, null),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP4b)}", AssetType.Nuclear, null),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP4c)}", AssetType.Nuclear, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP4a)}", AssetType.Radar, RoomUnitType.Unlinked),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP4b)}", AssetType.Nuclear, RoomUnitType.Unlinked),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Front, RoomUnitPosition.UP4c)}", AssetType.Nuclear, RoomUnitType.Unlinked),
                         ]
                     },
                     {
@@ -39,9 +39,9 @@ namespace CaptainSonar.Common.Domain.Vessel
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP1)}", AssetType.Passive, RoomUnitType.Orange),
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP2)}", AssetType.Attack, RoomUnitType.Orange),
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP3)}", AssetType.Passive, RoomUnitType.Orange),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP4a)}", AssetType.Radar, null),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP4b)}", AssetType.Attack, null),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP4c)}", AssetType.Nuclear, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP4a)}", AssetType.Radar, RoomUnitType.Unlinked),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP4b)}", AssetType.Attack, RoomUnitType.Unlinked),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.FrontMiddle, RoomUnitPosition.UP4c)}", AssetType.Nuclear, RoomUnitType.Unlinked),
                         ]
                     },
                     {
@@ -49,9 +49,9 @@ namespace CaptainSonar.Common.Domain.Vessel
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP1)}", AssetType.Radar, RoomUnitType.Black),
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP2)}", AssetType.Passive, RoomUnitType.Black),
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP3)}", AssetType.Attack, RoomUnitType.Black),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP4a)}", AssetType.Attack, null),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP4b)}", AssetType.Nuclear, null),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP4c)}", AssetType.Passive, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP4a)}", AssetType.Attack, RoomUnitType.Unlinked),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP4b)}", AssetType.Nuclear, RoomUnitType.Unlinked),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.RearMiddle, RoomUnitPosition.UP4c)}", AssetType.Passive, RoomUnitType.Unlinked),
                         ]
                     },
                     {
@@ -59,9 +59,9 @@ namespace CaptainSonar.Common.Domain.Vessel
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP1)}", AssetType.Radar, RoomUnitType.Orange),
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP2)}", AssetType.Passive, RoomUnitType.Black),
                             new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP3)}", AssetType.Attack, RoomUnitType.Yellow),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP4a)}", AssetType.Nuclear, null),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP4b)}", AssetType.Radar, null),
-                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP4c)}", AssetType.Nuclear, null),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP4a)}", AssetType.Nuclear, RoomUnitType.Unlinked),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP4b)}", AssetType.Radar, RoomUnitType.Unlinked),
+                            new RoomUnit($"{GetRoomUnitPositionId(RoomPosition.Rear, RoomUnitPosition.UP4c)}", AssetType.Nuclear, RoomUnitType.Unlinked),
                         ]
                     }
                 }
@@ -118,6 +118,16 @@ namespace CaptainSonar.Common.Domain.Vessel
         public static RoomUnitPosition GetRoomUnitPositionByRoomUnitPositionId(string roomUnitPositionId)
         {
             return (RoomUnitPosition)Enum.Parse(typeof(RoomUnitPosition), roomUnitPositionId.Split(":")[1]);
+        }
+
+        public static bool IsRoomUnitPositionStringValid(string roomUnitPosition)
+        {
+            return Enum.TryParse<RoomUnitPosition>(roomUnitPosition, out _);
+        }
+
+        public static bool IsRoomPositionStringValid(string roomUnitPosition)
+        {
+            return Enum.TryParse<RoomPosition>(roomUnitPosition, out _);
         }
     }
 }

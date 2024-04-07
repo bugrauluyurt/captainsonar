@@ -11,5 +11,6 @@ namespace CaptainSonar.Common.Domain.Vessel
         Yellow,
         Orange,
         Black,
+        Unlinked,
     }
 }

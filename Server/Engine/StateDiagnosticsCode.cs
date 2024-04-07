@@ -20,6 +20,8 @@ namespace CaptainSonar.Server.Engine
             { 1009, "Coordinate is on top of an obstacle" },
             { 1010, "Coordinate is on top of player's own path" },
             { 1011, "Moving to the coordinate is not allowed" },
+            { 1012, "Player has not moved yet" },
+            { 1013, "Room unit position id is not valid" },
             // Informatives
             { 2001, "Coordinate is on a mine" },
             { 2002, "Coordinate is on a self put mine" },
