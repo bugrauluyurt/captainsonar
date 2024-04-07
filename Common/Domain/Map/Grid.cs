@@ -22,8 +22,6 @@ namespace CaptainSonar.Common.Domain.Map
             _dots = CreateDots(Dimensions[0], Dimensions[1], Obstacles);
         }
 
-        public Dot[,] Dots => _dots;
-
         static public Dot[,] CreateDots(int columnCount, int rowCount, int[][] obstacles)
         {
             var matrix = new Dot[rowCount, columnCount];
@@ -43,6 +41,11 @@ namespace CaptainSonar.Common.Domain.Map
         public Dot GetDot(Coordinate coordinate)
         {
             return _dots[coordinate.Row, coordinate.Column];
+        }
+
+        public Dot[,] GetDots()
+        {
+            return _dots;
         }
 
         public void PrintGrid(List<Dot>? dotsMarked = null, bool isSectionViewEnabled = false)

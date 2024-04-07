@@ -15,19 +15,18 @@ namespace CaptainSonar.Common.Domain.Map
     public class DotProps
     {
         public bool HasObstacle { get; set; }
-        public bool IsPositionResetAllowed { get; set; }
+        public bool CanSurface { get; set; }
 
         public DotProps()
         {
             HasObstacle = false;
-            IsPositionResetAllowed = true;
+            CanSurface = true; // There are maps that user can not surface. Use this prop in the future to make the feature available.
         }
     }
 
-    public class Dot(Coordinate location, DotProps? props) : Node(location, null, 0, 0)
+    public class Dot(Coordinate location, DotProps? props = null) : Node(location, null, 0, 0)
     {
         public readonly DotProps Props = props ?? new DotProps();
-        private readonly List<DotMine> _mines = [];
         public readonly List<string> Notes = []; // user can store a list of notes for each dot.
         public string Color { get; set; } = "transparent"; // this is mostly used for the client side to show the color of the dot. Anything can be stored here.
 
@@ -41,21 +40,12 @@ namespace CaptainSonar.Common.Domain.Map
             return MapHelpers.GetReadableCoordinate(location);
         }
 
-        public bool IsMineExist(TeamName owner)
+        public Dot Clone()
         {
-            return _mines.Any(mine => mine.Owner == owner);
-        }
-
-        public void AddMine(TeamName owner)
-        {
-            if (!IsMineExist(owner))
+            return new Dot(Location, Props)
             {
-                _mines.Add(new DotMine(Location, owner));
-            }
-            else
-            {
-                throw new Exception($"Mine already exists for team {owner}");
-            }
+                Color = Color
+            };
         }
     }
 }

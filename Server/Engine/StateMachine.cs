@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CaptainSonar.Common.Domain.Commands;
 using CaptainSonar.Common.Domain.Game;
+using CaptainSonar.Common.Domain.Map;
 using CaptainSonar.Common.Utils;
 using CaptainSonar.Server.Engine;
 using Common.Domain.Commands;
@@ -158,7 +159,29 @@ namespace CaptainSonar.Server.Engine
             );
         }
 
-        // @TODO: Complete ExecMapMove (If ValidateMapMove InformativeDiagnostics list has 2001, 2002 or 2003 diagnostics code, then the players should take a damage)
+        public static StateExecutionStep ExecMapMove(
+            StateExecutionStep stateExecutionStep,
+            CommandMapMove command)
+        {
+            var teamName = command.Data.TeamName;
+            var direction = command.Data.Direction;
+            var lastKnownCoordinate = stateExecutionStep.State.TeamState[teamName].Dots.Last().Location;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateMapMove(stateExecutionStep, teamName, lastKnownCoordinate),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.MoveTeam(stateNext, teamName, lastKnownCoordinate, direction)
+                        ]
+                    );
+                }
+            );
+        }
 
         // @TODO: Complete the other commands
 

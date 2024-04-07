@@ -100,6 +100,11 @@ namespace CaptainSonar.Common.Domain.Map
             return obstacles.Any(obstacle => obstacle[0] == coordinate.Row && obstacle[1] == coordinate.Column);
         }
 
+        public static bool IsCoordinateAdjacent(Coordinate coordinate1, Coordinate coordinate2)
+        {
+            return Math.Abs(coordinate1.Row - coordinate2.Row) <= 1 && Math.Abs(coordinate1.Column - coordinate2.Column) <= 1;
+        }
+
         public static bool CanMove(
             Coordinate coordinateProspect,
             GridType mapType,
@@ -107,19 +112,28 @@ namespace CaptainSonar.Common.Domain.Map
         {
             return IsCoordinateInBounds(coordinateProspect, mapType) &&
                    !IsCoordinateOnObstacle(coordinateProspect, mapType) &&
-                   !IsCoordinateOnPath(coordinateProspect, dots);
+                   !IsCoordinateOnPath(coordinateProspect, dots) &&
+                   IsCoordinateAdjacent(dots.Last().Location, coordinateProspect);
         }
 
-        public static bool IsCoordinateOnAnyTeamsMine(Coordinate coordinate, Grid grid)
+        public static Coordinate GetNextCoordinateFromDirection(Coordinate lastKnownCoordinate, Direction direction)
         {
-            var dot = grid.GetDot(coordinate);
-            return dot.IsMineExist(TeamName.Team1) || dot.IsMineExist(TeamName.Team2);
+            var row = lastKnownCoordinate.Row;
+            var column = lastKnownCoordinate.Column;
+
+            return direction switch
+            {
+                Direction.North => new Coordinate(row - 1, column),
+                Direction.East => new Coordinate(row, column + 1),
+                Direction.South => new Coordinate(row + 1, column),
+                Direction.West => new Coordinate(row, column - 1),
+                _ => new Coordinate(row, column),
+            };
         }
 
-        public static bool IsCoordinateOnATeamMine(Coordinate coordinate, Grid grid, TeamName teamName)
+        public static Dot GetDotFromCoordinate(Coordinate coordinate, Grid grid)
         {
-            var dot = grid.GetDot(coordinate);
-            return dot.IsMineExist(teamName);
+            return grid.GetDots()[coordinate.Row, coordinate.Column];
         }
 
     }

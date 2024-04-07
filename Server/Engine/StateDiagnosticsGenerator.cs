@@ -17,9 +17,9 @@ namespace CaptainSonar.Server.Engine
             List<SystemException> exceptions = [];
             foreach (var conditionForException in conditionsForExceptions)
             {
-                if (!conditionForException.Item1)
+                if (conditionForException.Item1)
                 {
-                    exceptions.Add(new InvalidOperationException(StateDiagnosticsCode.GetDiagnosticMessage(conditionForException.Item2)));
+                    exceptions.Add(new InvalidOperationException(StateDiagnosticsCode.GetDiagnosticMessageByCode(conditionForException.Item2)));
                 }
             }
 
@@ -27,9 +27,9 @@ namespace CaptainSonar.Server.Engine
             List<(int, string)> informatives = [];
             foreach (var conditionForInformative in conditionsForInformatives)
             {
-                if (!conditionForInformative.Item1)
+                if (conditionForInformative.Item1)
                 {
-                    var diagnosticMessage = StateDiagnosticsCode.GetDiagnosticMessage(conditionForInformative.Item2);
+                    var diagnosticMessage = StateDiagnosticsCode.GetDiagnosticMessageByCode(conditionForInformative.Item2);
                     informatives.Add((conditionForInformative.Item2, diagnosticMessage));
                 }
             }

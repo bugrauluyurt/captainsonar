@@ -8,7 +8,7 @@ namespace CaptainSonar.Common.Domain.Map
 {
     public static class GridObstacles
     {
-        static readonly Dictionary<GridType, int[][]> ObstacleByGridType = new()
+        private static readonly Dictionary<GridType, int[][]> ObstacleByGridType = new()
         {
             { GridType.Alpha, [
                 [1, 2], [1, 6], [1, 12], [1, 13],

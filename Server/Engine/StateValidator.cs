@@ -14,19 +14,19 @@ namespace CaptainSonar.Server.Engine
             var state = stateExecutionStep.State;
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
-                    player is not null,
+                    player is null,
                     1001
                 ),
                 (
-                    state.Victor is null,
+                    state.Victor is not null,
                     1002
                 ),
                 (
-                    state.Status == GameStatus.NotStarted,
+                    state.Status != GameStatus.NotStarted,
                     1003
                 ),
                 (
-                    state.TeamState[TeamName.Team1].Players.Count == 0 && state.TeamState[TeamName.Team2].Players.Count == 0,
+                    state.TeamState[TeamName.Team1].Players.Count != 0 || state.TeamState[TeamName.Team2].Players.Count != 0,
                     1005
                 )
             ], []);
@@ -47,7 +47,7 @@ namespace CaptainSonar.Server.Engine
             // }
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
-                    player is not null,
+                    player is null,
                     1001
                 ),
             ], []);
@@ -57,7 +57,7 @@ namespace CaptainSonar.Server.Engine
         {
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
-                    player is not null,
+                    player is null,
                     1001
                 ),
                 (
@@ -65,7 +65,7 @@ namespace CaptainSonar.Server.Engine
                     1002
                 ),
                 (
-                    stateExecutionStep.State.Status == GameStatus.NotStarted,
+                    stateExecutionStep.State.Status != GameStatus.NotStarted,
                     1004
                 )
             ], []);
@@ -100,31 +100,22 @@ namespace CaptainSonar.Server.Engine
                     1008
                 ),
                 (
-                    !MapHelpers.IsCoordinateOnObstacle(coordinate, gridType),
+                    MapHelpers.IsCoordinateOnObstacle(coordinate, gridType),
                     1009
                 ),
                 (
-                    !MapHelpers.IsCoordinateOnPath(coordinate, state.TeamState[teamName].Dots),
+                    MapHelpers.IsCoordinateOnPath(coordinate, state.TeamState[teamName].Dots),
                     1010
+                ),
+                (
+                    !MapHelpers.IsCoordinateAdjacent(coordinate, state.TeamState[teamName].Dots.Last().Location),
+                    1012
                 ),
                 (
                     !MapHelpers.CanMove(coordinate, gridType, state.TeamState[teamName].Dots),
                     1011
                 )
-            ], [
-                (
-                    MapHelpers.IsCoordinateOnAnyTeamsMine(coordinate, grid),
-                    2001
-                ),
-                (
-                    MapHelpers.IsCoordinateOnATeamMine(coordinate, grid, teamName),
-                    2002
-                ),
-                (
-                    MapHelpers.IsCoordinateOnATeamMine(coordinate, grid, teamName.GetEnemyTeamName()),
-                    2003
-                )
-            ]);
+            ], []);
         }
 
         // ValidateMapMove(StateExecutionStep stateExecutionStep, TeamName teamName, Coordinate coordinate)

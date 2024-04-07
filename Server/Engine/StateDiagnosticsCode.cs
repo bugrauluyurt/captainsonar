@@ -26,7 +26,7 @@ namespace CaptainSonar.Server.Engine
             { 2003, "Coordinate is on an enemy mine" },
         };
 
-        public static string GetDiagnosticMessage(int code)
+        public static string GetDiagnosticMessageByCode(int code)
         {
             return DiagnosticMessage[code];
         }

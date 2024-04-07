@@ -10,7 +10,7 @@ namespace CaptainSonar.Common.Domain.Commands
 {
     public class CommandMapMoveData
     {
-        public Player Player { get; set; } = null!;
+        public TeamName TeamName { get; set; }
         public Direction Direction { get; set; }
     }
 

@@ -95,9 +95,13 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
-        public static bool HasMine(Grid grid, Coordinate coordinate, TeamName teamName)
+        public static State MoveTeam(State state, TeamName team, Coordinate lastKnownCoordinate, Direction direction)
         {
-            return grid.GetDot(coordinate).IsMineExist(teamName);
+            var newCoordinate = MapHelpers.GetNextCoordinateFromDirection(lastKnownCoordinate, direction);
+            var grid = state.Grid;
+            var dot = MapHelpers.GetDotFromCoordinate(newCoordinate, grid);
+            state.TeamState[team].Dots.Add(dot.Clone());
+            return state;
         }
 
         /*

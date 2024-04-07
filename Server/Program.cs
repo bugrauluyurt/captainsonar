@@ -21,7 +21,7 @@ grid.PrintGrid(dotsMarked: player1Dots);
 var startCoordinate = new Coordinate(1, 1);
 var endCoordinate = new Coordinate(1, 1);
 
-var shortestPathCount = Pathfinder.FindShortestPathCount(grid.Dots, startCoordinate, endCoordinate);
+var shortestPathCount = Pathfinder.FindShortestPathCount(grid.GetDots(), startCoordinate, endCoordinate);
 
 Console.WriteLine($"The shortest path from {startCoordinate.Row}:{startCoordinate.Column} to {endCoordinate.Row}:{endCoordinate.Column} is {shortestPathCount} moves");
 
