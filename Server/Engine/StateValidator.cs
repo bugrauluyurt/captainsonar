@@ -76,7 +76,7 @@ namespace CaptainSonar.Server.Engine
         {
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
-                    player is not null,
+                    player is null,
                     1001
                 ),
                 (

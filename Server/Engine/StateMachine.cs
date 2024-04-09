@@ -294,7 +294,7 @@ namespace CaptainSonar.Server.Engine
         }
 
         // @TODO: Either inside this method or within the higher level functions we need to validate the given order of commands. Order might be faulty.
-        // @TODO: The order should determine the turn of the game.
-        // Write a method called ExecCommands => This should take a list commands and generate a new state. Returna a StateExecutionStep.
+        // for PVA we can leave the order as is and the commands are controlled by the client side.
+        // @TODO: The order should determine the turn of the game. For PVA turn is not important since there wont be any online support.
     }
 }
