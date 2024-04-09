@@ -125,6 +125,12 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
+        public static State RepairRoomUnitsByRoomUnitType(State state, TeamName teamName, RoomUnitType roomUnitType)
+        {
+            state.TeamState[teamName].Vessel.RepairRoomUnitsByRoomUnitType(roomUnitType);
+            return state;
+        }
+
         /*
         Commands List
         - Session_Start (Player) => The system is going to start the game. The player is going to be the first player of the first team. Create the state and the session.
@@ -146,7 +152,8 @@ namespace CaptainSonar.Server.Engine
         - [PHASE_2] Report_AfterSurface => Player reports the position of himself.
         - [PHASE_2] Game_End_Turn => The player ends the turn.
         - RoomUnit_Damage
-        - RoomUnit_Repair => A list of roomUnits can be sent here for clearing. Or the
+        - RoomUnit_Repair => A list of roomUnits can be sent here for clearing.
+        - RoomUnit_RepairByType => Repairs the connected room units.
         - AssetSlots_Increase
         - AssetSlots_Use (data sent changes according to the used asset type)
         - Info_AddDots (user adds info dots on the map to store information about the enemy's location or other things)

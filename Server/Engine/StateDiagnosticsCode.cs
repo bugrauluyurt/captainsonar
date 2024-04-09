@@ -22,6 +22,9 @@ namespace CaptainSonar.Server.Engine
             { 1011, "Moving to the coordinate is not allowed" },
             { 1012, "Player has not moved yet" },
             { 1013, "Room unit position id is not valid" },
+            { 1014, "Room unit type is not valid" },
+            { 1015, "Unlinked room units can not be repaired by type" },
+            { 1016, "Linked room units can only be repaired when they are all damaged" },
             // Informatives
             { 2001, "Coordinate is on a mine" },
             { 2002, "Coordinate is on a self put mine" },

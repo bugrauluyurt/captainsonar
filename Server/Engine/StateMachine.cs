@@ -251,6 +251,29 @@ namespace CaptainSonar.Server.Engine
             );
         }
 
+        public static StateExecutionStep ExecRoomUnitsRepairByType(
+            StateExecutionStep stateExecutionStep,
+            CommandRoomUnitsRepairByType command)
+        {
+            var teamName = command.Data.TeamName;
+            var roomUnitType = command.Data.RoomUnitType;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateRoomUnitsRepairByType(stateExecutionStep, teamName, roomUnitType),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.RepairRoomUnitsByRoomUnitType(stateNext, teamName, roomUnitType)
+                        ]
+                    );
+                }
+            );
+        }
+
         // @TODO: Write the other command execution logic here.
 
         // ExecCommand takes a command and executes it on the current state while updates the state and the commands list.

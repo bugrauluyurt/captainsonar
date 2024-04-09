@@ -166,6 +166,31 @@ namespace CaptainSonar.Server.Engine
             ], []);
         }
 
+        public static StateExecutionStep ValidateRoomUnitsRepairByType(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName,
+            RoomUnitType roomUnitType)
+        {
+            var state = stateExecutionStep.State;
+            var vessel = state.TeamState[teamName].Vessel;
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    !Enum.IsDefined(typeof(RoomUnitType), roomUnitType),
+                    1014
+                ),
+                (
+                    roomUnitType == RoomUnitType.Unlinked,
+                    1015
+                ),
+                (
+                    !vessel.IsAllRoomUnitsWithRoomUnitTypeDamaged(roomUnitType),
+                    1016
+                )
+            ], []);
+        }
+
+
         // ValidateMapMove(StateExecutionStep stateExecutionStep, TeamName teamName, Coordinate coordinate)
         // - Next coordinart can not be out of boundaries.
         // - Next coordinate can not be on top of an obstacle. The system should look at the obstacles and check if the next coordinate is an obstacle.

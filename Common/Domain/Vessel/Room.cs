@@ -29,9 +29,9 @@ namespace CaptainSonar.Common.Domain.Vessel
             _roomUnits = roomUnits;
         }
 
-        public bool IsRoomUnitDamaged(AssetType assetType)
+        public bool IsAnyRoomUnitDamaged(AssetType assetType)
         {
-            return GetRoomUnits()?.Any(roomUnit => roomUnit.GetAssetType() == assetType && roomUnit.IsDamaged()) ?? false;
+            return GetRoomUnits().Any(roomUnit => roomUnit.GetAssetType() == assetType && roomUnit.IsDamaged());
         }
 
         public bool IsAllUnlinkedRoomUnitsDamaged()
@@ -54,10 +54,20 @@ namespace CaptainSonar.Common.Domain.Vessel
             return _roomUnits?.All(roomUnit => roomUnit.IsDamaged()) ?? false;
         }
 
+        public static bool IsRoomPositionValid(string roomPositionString)
+        {
+            return Enum.TryParse<RoomPosition>(roomPositionString, out _);
+        }
+
         public void RepairRoomUnitByPositionId(string positionId)
         {
             var roomUnit = _roomUnits?.FirstOrDefault(roomUnit => roomUnit.PositionId == positionId);
             roomUnit?.Repair();
+        }
+
+        public void RepairRoomUnitsByRoomUnitType(RoomUnitType roomUnitType)
+        {
+            _roomUnits?.Where(roomUnit => roomUnit.RoomUnitType == roomUnitType).ToList().ForEach(roomUnit => roomUnit.Repair());
         }
 
         public void RepairAllUnlinkedRoomUnits()
@@ -71,9 +81,6 @@ namespace CaptainSonar.Common.Domain.Vessel
             roomUnit?.Damage();
         }
 
-        public static bool IsRoomPositionValid(string roomPositionString)
-        {
-            return Enum.TryParse<RoomPosition>(roomPositionString, out _);
-        }
+
     }
 }

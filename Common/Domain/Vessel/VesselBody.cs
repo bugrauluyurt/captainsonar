@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +18,11 @@ namespace CaptainSonar.Common.Domain.Vessel
         public bool IsAllNuclearRoomUnitsDamaged()
         {
             return Rooms.All(room => room.IsAllNuclearRoomUnitsDamaged());
+        }
+
+        public bool IsAllRoomUnitsWithRoomUnitTypeDamaged(RoomUnitType roomUnitType)
+        {
+            return Rooms.All(room => room.GetRoomUnits().All(roomUnit => roomUnit.RoomUnitType == roomUnitType && roomUnit.IsDamaged()));
         }
 
         public void RepairAllRooms()
@@ -48,6 +52,11 @@ namespace CaptainSonar.Common.Domain.Vessel
         public void RepairRoomUnitsByPositionIds(List<string> roomUnitPositionIds)
         {
             roomUnitPositionIds.ForEach(RepairRoomUnitByPositionId);
+        }
+
+        public void RepairRoomUnitsByRoomUnitType(RoomUnitType roomUnitType)
+        {
+            Rooms.ForEach(room => room.RepairRoomUnitsByRoomUnitType(roomUnitType));
         }
     }
 }
