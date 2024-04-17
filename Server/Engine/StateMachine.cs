@@ -274,6 +274,29 @@ namespace CaptainSonar.Server.Engine
             );
         }
 
+        public static StateExecutionStep ExecAssetIncrease(
+            StateExecutionStep stateExecutionStep,
+            CommandAssetIncrease command)
+        {
+            var assetName = command.Data.AssetName;
+            var teamName = command.Data.TeamName;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateAssetIncrease(stateExecutionStep, teamName, assetName),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.IncreaseAsset(stateNext, teamName, assetName)
+                        ]
+                    );
+                }
+            );
+        }
+
         // @TODO: Write the other command execution logic here.
 
         // ExecCommand takes a command and executes it on the current state while updates the state and the commands list.

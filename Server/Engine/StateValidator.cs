@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CaptainSonar.Common.Domain.Assets;
 using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Common.Domain.Map;
 using CaptainSonar.Common.Domain.Vessel;
+using Common.Domain.Assets;
 
 namespace CaptainSonar.Server.Engine
 {
@@ -186,6 +188,26 @@ namespace CaptainSonar.Server.Engine
                 (
                     !vessel.IsAllRoomUnitsWithRoomUnitTypeDamaged(roomUnitType),
                     1016
+                )
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateAssetIncrease(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName,
+            AssetName assetName)
+        {
+            var state = stateExecutionStep.State;
+            var asset = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == assetName);
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    asset is null,
+                    1017
+                ),
+                (
+                    asset is not null && asset.Slots.IsFilled,
+                    1018
                 )
             ], []);
         }

@@ -25,6 +25,8 @@ namespace CaptainSonar.Server.Engine
             { 1014, "Room unit type is not valid" },
             { 1015, "Unlinked room units can not be repaired by type" },
             { 1016, "Linked room units can only be repaired when they are all damaged" },
+            { 1017, "Asset with the given name does not exist" },
+            { 1018, "Asset is already full" },
             // Informatives
             { 2001, "Coordinate is on a mine" },
             { 2002, "Coordinate is on a self put mine" },

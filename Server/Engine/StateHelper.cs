@@ -131,6 +131,28 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
+        public static State IncreaseAsset(State state, TeamName teamName, AssetName assetName)
+        {
+            var asset = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == assetName);
+            if (asset is null)
+            {
+                return state;
+            }
+            asset.Slots.Increase();
+            return state;
+        }
+
+        public static State EmptyAsset(State state, TeamName teamName, AssetName assetName)
+        {
+            var asset = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == assetName);
+            if (asset is null)
+            {
+                return state;
+            }
+            asset.Slots.Empty();
+            return state;
+        }
+
         /*
         Commands List
         - Session_Start (Player) => The system is going to start the game. The player is going to be the first player of the first team. Create the state and the session.
@@ -154,8 +176,8 @@ namespace CaptainSonar.Server.Engine
         - RoomUnit_Damage
         - RoomUnit_Repair => A list of roomUnits can be sent here for clearing.
         - RoomUnit_RepairByType => Repairs the connected room units.
-        - AssetSlots_Increase
-        - AssetSlots_Use (data sent changes according to the used asset type)
+        - Asset_Increase
+        - Asset_Use (data sent changes according to the used asset type)
         - Info_AddDots (user adds info dots on the map to store information about the enemy's location or other things)
          */
 

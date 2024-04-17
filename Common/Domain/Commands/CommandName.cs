@@ -15,8 +15,8 @@ namespace CaptainSonar.Common.Domain.Commands
         RoomUnit_Damage,
         RoomUnits_Repair,
         RoomUnits_RepairByType,
-        AssetSlots_Increase,
-        AssetSlots_Use,
+        Asset_Increase,
+        Asset_Use,
         Info_AddDots,
     }
 }
