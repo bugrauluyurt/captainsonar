@@ -142,6 +142,20 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
+        public static State UseAssetMine(State state, TeamName teamName, Coordinate coordinate)
+        {
+            var asset = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Mine);
+            if (asset is null)
+            {
+                return state;
+            }
+            state.TeamState[teamName].Mines.Add(new StateMine
+            {
+                Dot = state.Grid.GetDot(coordinate).Clone()
+            });
+            return state;
+        }
+
         public static State EmptyAsset(State state, TeamName teamName, AssetName assetName)
         {
             var asset = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == assetName);
@@ -177,7 +191,11 @@ namespace CaptainSonar.Server.Engine
         - RoomUnit_Repair => A list of roomUnits can be sent here for clearing.
         - RoomUnit_RepairByType => Repairs the connected room units.
         - Asset_Increase
-        - Asset_Use (data sent changes according to the used asset type)
+        - Asset_Use_Mine
+        - Asset_Use_Torpedo
+        - Asset_Use_Drone
+        - Asset_Use_Sonar
+        - Asset_Use_Silence
         - Info_AddDots (user adds info dots on the map to store information about the enemy's location or other things)
          */
 

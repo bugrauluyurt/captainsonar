@@ -297,6 +297,29 @@ namespace CaptainSonar.Server.Engine
             );
         }
 
+        public static StateExecutionStep ExecAssetUseMine(
+            StateExecutionStep stateExecutionStep,
+            CommandAssetUseMine command)
+        {
+            var coordinate = command.Data.Coordinate;
+            var teamName = command.Data.TeamName;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateAssetUseMine(stateExecutionStep, teamName, coordinate),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.UseAssetMine(stateNext, teamName, coordinate)
+                        ]
+                    );
+                }
+            );
+        }
+
         // @TODO: Write the other command execution logic here.
 
         // ExecCommand takes a command and executes it on the current state while updates the state and the commands list.

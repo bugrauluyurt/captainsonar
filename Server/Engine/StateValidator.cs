@@ -212,6 +212,37 @@ namespace CaptainSonar.Server.Engine
             ], []);
         }
 
+        public static StateExecutionStep ValidateAssetUseMine(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName,
+            Coordinate coordnate)
+        {
+            var state = stateExecutionStep.State;
+            var grid = state.Grid;
+            var gridType = grid.MapType;
+            var assetMine = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Mine);
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    !MapHelpers.IsCoordinateInBounds(coordnate, gridType),
+                    1008
+                ),
+                (
+                    MapHelpers.IsCoordinateOnPath(coordnate, state.TeamState[teamName].Dots),
+                    1019
+                ),
+                (
+                    MapHelpers.IsCoordinateOnObstacle(coordnate, gridType),
+                    1020
+                ),
+                (
+                    assetMine is not null && assetMine.Slots.IsEmpty,
+                    1021
+                )
+            ], []);
+        }
+
+
 
         // ValidateMapMove(StateExecutionStep stateExecutionStep, TeamName teamName, Coordinate coordinate)
         // - Next coordinart can not be out of boundaries.
