@@ -18,6 +18,10 @@ namespace CaptainSonar.Common.Domain.Commands
         Asset_Increase,
         Asset_Deploy_Mine,
         Asset_Deploy_Torpedo,
+        Asset_Deploy_Drone,
+        Asset_Deploy_Sonar,
+        Asset_Deploy_Silence,
+        Asset_Detonate_Mine,
         Info_AddDots,
     }
 }

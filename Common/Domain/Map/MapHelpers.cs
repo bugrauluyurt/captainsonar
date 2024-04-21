@@ -105,6 +105,30 @@ namespace CaptainSonar.Common.Domain.Map
             return Math.Abs(coordinate1.Row - coordinate2.Row) <= 1 && Math.Abs(coordinate1.Column - coordinate2.Column) <= 1;
         }
 
+        public static bool IsCoordinateListAdjacent(List<Coordinate> coordinates)
+        {
+            for (var i = 0; i < coordinates.Count - 1; i++)
+            {
+                if (!IsCoordinateAdjacent(coordinates[i], coordinates[i + 1]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool IsCoordinateListValid(List<Coordinate> coordinatesJumped, GridType gridType, List<Dot> dots)
+        {
+            return coordinatesJumped.All(coordinate =>
+            {
+                return IsCoordinateInBounds(coordinate, gridType) &&
+                       !IsCoordinateOnObstacle(coordinate, gridType) &&
+                       !IsCoordinateOnPath(coordinate, dots);
+
+            });
+        }
+
         public static bool IsCoordinateWithinAllowedDistance(Dot[,] dots, Coordinate coordinate1, Coordinate coordinate2, int distance)
         {
             var shortestPathDistance = Pathfinder.FindShortestPathCount(dots, coordinate1, coordinate2);

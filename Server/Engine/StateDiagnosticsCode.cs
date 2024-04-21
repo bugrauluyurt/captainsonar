@@ -31,6 +31,10 @@ namespace CaptainSonar.Server.Engine
             { 1020, "Putting mine on an obstacle is forbidden." },
             { 1021, "Player can not use an empty asset. Asset needs to be loaded first." },
             { 1022, "The distance is not allowed to deploy the asset." },
+            { 1023, "Provided coordinate list is invalid. Some of the coordinates are either out of bounds, are on an obstacle, are not adjacent or intersects with player's own path." },
+            { 1024, "Player's last coordinate and the first coordinate provided in the list are not adjacent." },
+            { 1025, "A mine already exists in that location." },
+            { 1026, "A mine does not exist on given coordinates." },
             // Informatives
             { 2001, "Coordinate is on a mine" },
             { 2002, "Coordinate is on a self put mine" },

@@ -238,7 +238,11 @@ namespace CaptainSonar.Server.Engine
                 (
                     assetMine is not null && assetMine.Slots.IsEmpty,
                     1021
-                )
+                ),
+                (
+                    state.TeamState[teamName].Mines.Any(mine => mine.Dot.Location.ToString() == coordinate.ToString()),
+                    1025
+                ),
             ], []);
         }
 
@@ -275,6 +279,105 @@ namespace CaptainSonar.Server.Engine
                     !MapHelpers.IsCoordinateWithinAllowedDistance(dots, playerCoordinate, torpedoCoordinate, Torpedo.MAX_RANGE),
                     1022
                 )
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateAssetDeployDrone(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName)
+        {
+            var state = stateExecutionStep.State;
+            var assetDrone = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Drone);
+
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    assetDrone is not null && assetDrone.Slots.IsEmpty,
+                    1021
+                )
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateAssetDeploySonar(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName)
+        {
+            var state = stateExecutionStep.State;
+            var assetSonar = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Sonar);
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+
+                (
+                    assetSonar is not null && assetSonar.Slots.IsEmpty,
+                    1021
+                )
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateAssetDeploySilence(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName,
+            List<Coordinate> coordinatesJumped)
+        {
+            var state = stateExecutionStep.State;
+            var grid = state.Grid;
+            var gridType = grid.MapType;
+            var assetSilence = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Silence);
+            var playerDots = state.TeamState[teamName].Dots;
+            var playerLastCoordinate = state.TeamState[teamName].Dots.Last().Location;
+            var coordinatesJumpedLastCoordinate = coordinatesJumped.Last();
+            var dots = stateExecutionStep.State.Grid.GetDots();
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    assetSilence is not null && assetSilence.Slots.IsEmpty,
+                    1021
+                ),
+                (
+                    !MapHelpers.IsCoordinateWithinAllowedDistance(dots, playerLastCoordinate, coordinatesJumpedLastCoordinate, Silence.MAX_RANGE),
+                    1022
+                ),
+                (
+                    !MapHelpers.IsCoordinateAdjacent(playerLastCoordinate, coordinatesJumped.First()),
+                    1024
+                ),
+                (
+                    !MapHelpers.IsCoordinateListValid(coordinatesJumped, gridType, playerDots),
+                    1023
+                ),
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateAssetDetonateMine(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName,
+            Coordinate mineCoordinate)
+        {
+            var state = stateExecutionStep.State;
+            var grid = state.Grid;
+            var gridType = grid.MapType;
+            var assetMine = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Mine);
+            var playerCoordinate = state.TeamState[teamName].Dots.Last().Location;
+            var dots = stateExecutionStep.State.Grid.GetDots();
+            var mine = state.TeamState[teamName].Mines.FirstOrDefault(mine => mine.Dot.Location.ToString() == mineCoordinate.ToString());
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    mine is null,
+                    1026
+                ),
+                (
+                    assetMine is not null && assetMine.Slots.IsEmpty,
+                    1021
+                ),
+                (
+                    !MapHelpers.IsCoordinateInBounds(mineCoordinate, gridType),
+                    1008
+                ),
+                (
+                    MapHelpers.IsCoordinateOnObstacle(mineCoordinate, gridType),
+                    1020
+                ),
             ], []);
         }
 

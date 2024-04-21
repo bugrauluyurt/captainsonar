@@ -159,6 +159,27 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
+        public static State DeployAssetSilence(
+            State state,
+            TeamName teamName,
+            List<Coordinate> coordinatesJumped)
+        {
+            var teamDots = state.TeamState[teamName].Dots;
+            List<Dot> dotsJumped = coordinatesJumped.Select(coordinate => state.Grid.GetDot(coordinate).Clone()).ToList();
+            state.TeamState[teamName].Dots.AddRange(dotsJumped);
+            return state;
+        }
+
+        public static State DetonateAssetMine(
+            State state,
+            TeamName teamName,
+            Coordinate coordinate)
+        {
+            var mines = state.TeamState[teamName].Mines;
+            mines.RemoveAll(mine => mine.Dot.Location.ToString() == coordinate.ToString());
+            return state;
+        }
+
         public static State EmptyAsset(State state, TeamName teamName, AssetName assetName)
         {
             var asset = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == assetName);
@@ -200,7 +221,8 @@ namespace CaptainSonar.Server.Engine
         - Asset_Deploy_Sonar
         - Asset_Deploy_Silence
         - Asset_Detonate_Mine
-        - Info_AddDots (user adds info dots on the map to store information about the enemy's location or other things)
+        - Info_Add (user adds info items. Info items can include dots or other string notes)
+        - Info_Remove (user removes info items)
          */
 
         /*

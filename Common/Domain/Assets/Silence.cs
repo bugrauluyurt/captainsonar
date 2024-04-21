@@ -8,5 +8,6 @@ namespace CaptainSonar.Common.Domain.Assets
 {
     public class Silence(int slotSize = 6) : Asset(AssetType.Passive, AssetName.Silence, slotSize)
     {
+        public static readonly int MAX_RANGE = 4;
     }
 }

@@ -345,6 +345,97 @@ namespace CaptainSonar.Server.Engine
             );
         }
 
+        public static StateExecutionStep ExecAssetDeployDrone(
+            StateExecutionStep stateExecutionStep,
+            CommandAssetDeployDrone command)
+        {
+            var teamName = command.Data.TeamName;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateAssetDeployDrone(stateExecutionStep, teamName),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.EmptyAsset(stateNext, teamName, AssetName.Drone)
+                        ]
+                    );
+                }
+            );
+        }
+
+        public static StateExecutionStep ExecAssetDeploySonar(
+            StateExecutionStep stateExecutionStep,
+            CommandAssetDeployDrone command)
+        {
+            var teamName = command.Data.TeamName;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateAssetDeploySonar(stateExecutionStep, teamName),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.EmptyAsset(stateNext, teamName, AssetName.Sonar)
+                        ]
+                    );
+                }
+            );
+        }
+
+        public static StateExecutionStep ExecAssetDetonateMine(
+            StateExecutionStep stateExecutionStep,
+            CommandAssetDetonateMine command)
+        {
+            var mineCoordinate = command.Data.Coordinate;
+            var teamName = command.Data.TeamName;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateAssetDetonateMine(stateExecutionStep, teamName, mineCoordinate),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.DetonateAssetMine(stateNext, teamName, mineCoordinate)
+                        ]
+                    );
+                }
+            );
+        }
+
+        public static StateExecutionStep ExecAssetDeploySilence(
+            StateExecutionStep stateExecutionStep,
+            CommandAssetDeploySilence command)
+        {
+            var teamName = command.Data.TeamName;
+            var coordinates = command.Data.Coordinates;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateAssetDeploySilence(stateExecutionStep, teamName, coordinates),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.DeployAssetSilence(stateNext, teamName, coordinates),
+                            (stateNext) =>  StateHelper.EmptyAsset(stateNext, teamName, AssetName.Silence)
+                        ]
+                    );
+                }
+            );
+        }
+
         // @TODO: Write the other command execution logic here.
 
         // ExecCommand takes a command and executes it on the current state while updates the state and the commands list.
