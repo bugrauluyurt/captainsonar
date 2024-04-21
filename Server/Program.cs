@@ -18,8 +18,8 @@ var player1Dots = new List<Dot>
 var grid = new Grid(GridType.Alpha);
 grid.PrintGrid(dotsMarked: player1Dots);
 
-var startCoordinate = new Coordinate(1, 1);
-var endCoordinate = new Coordinate(1, 1);
+var startCoordinate = new Coordinate(2, 1);
+var endCoordinate = new Coordinate(2, 3);
 
 var shortestPathCount = Pathfinder.FindShortestPathCount(grid.GetDots(), startCoordinate, endCoordinate);
 

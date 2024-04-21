@@ -55,11 +55,28 @@ namespace CaptainSonar.Common.Domain.Map
 
         public static int FindShortestPathCount(Dot[,] matrix, Coordinate start, Coordinate end)
         {
+            if (start.ToString() == end.ToString())
+            {
+                return 0;
+            }
+
+            if (start.Row == end.Row)
+            {
+                return Math.Abs(start.Column - end.Column);
+            }
+
+            if (start.Column == end.Column)
+            {
+                return Math.Abs(start.Row - end.Row);
+            }
+
             var shortestPath = FindShortestPath(matrix, start, end);
+
             if (shortestPath == null)
             {
                 return -1;
             }
+
             return shortestPath.Count - 1;
         }
 

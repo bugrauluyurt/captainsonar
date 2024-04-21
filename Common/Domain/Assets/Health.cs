@@ -8,7 +8,7 @@ namespace CaptainSonar.Common.Domain.Assets
 {
     public class Health(int slotSize = 4) : Asset(AssetType.Health, AssetName.Health, slotSize, false)
     {
-        public bool IsAlive => !Slots.IsFilled;
+        public bool IsAlive => !Slots.IsLoaded;
         public bool IsDead => !IsAlive;
 
         public void Damage()
@@ -17,7 +17,7 @@ namespace CaptainSonar.Common.Domain.Assets
             {
                 throw new InvalidOperationException("Health is already depleted");
             }
-            Slots.Increase();
+            Slots.Load();
         }
     }
 }

@@ -30,6 +30,7 @@ namespace CaptainSonar.Server.Engine
             { 1019, "Putting mine on your own path is forbidden." },
             { 1020, "Putting mine on an obstacle is forbidden." },
             { 1021, "Player can not use an empty asset. Asset needs to be loaded first." },
+            { 1022, "The distance is not allowed to deploy the asset." },
             // Informatives
             { 2001, "Coordinate is on a mine" },
             { 2002, "Coordinate is on a self put mine" },

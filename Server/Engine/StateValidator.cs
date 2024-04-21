@@ -192,7 +192,7 @@ namespace CaptainSonar.Server.Engine
             ], []);
         }
 
-        public static StateExecutionStep ValidateAssetIncrease(
+        public static StateExecutionStep ValidateAssetLoad(
             StateExecutionStep stateExecutionStep,
             TeamName teamName,
             AssetName assetName)
@@ -206,16 +206,16 @@ namespace CaptainSonar.Server.Engine
                     1017
                 ),
                 (
-                    asset is not null && asset.Slots.IsFilled,
+                    asset is not null && asset.Slots.IsLoaded,
                     1018
                 )
             ], []);
         }
 
-        public static StateExecutionStep ValidateAssetUseMine(
+        public static StateExecutionStep ValidateAssetDeployMine(
             StateExecutionStep stateExecutionStep,
             TeamName teamName,
-            Coordinate coordnate)
+            Coordinate coordinate)
         {
             var state = stateExecutionStep.State;
             var grid = state.Grid;
@@ -224,20 +224,56 @@ namespace CaptainSonar.Server.Engine
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
-                    !MapHelpers.IsCoordinateInBounds(coordnate, gridType),
+                    !MapHelpers.IsCoordinateInBounds(coordinate, gridType),
                     1008
                 ),
                 (
-                    MapHelpers.IsCoordinateOnPath(coordnate, state.TeamState[teamName].Dots),
+                    MapHelpers.IsCoordinateOnPath(coordinate, state.TeamState[teamName].Dots),
                     1019
                 ),
                 (
-                    MapHelpers.IsCoordinateOnObstacle(coordnate, gridType),
+                    MapHelpers.IsCoordinateOnObstacle(coordinate, gridType),
                     1020
                 ),
                 (
                     assetMine is not null && assetMine.Slots.IsEmpty,
                     1021
+                )
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateAssetDeployTorpedo(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName,
+            Coordinate torpedoCoordinate)
+        {
+            var state = stateExecutionStep.State;
+            var grid = state.Grid;
+            var gridType = grid.MapType;
+            var assetTorpedo = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Torpedo);
+            var playerCoordinate = state.TeamState[teamName].Dots.Last().Location;
+            var dots = stateExecutionStep.State.Grid.GetDots();
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    !MapHelpers.IsCoordinateInBounds(torpedoCoordinate, gridType),
+                    1008
+                ),
+                (
+                    MapHelpers.IsCoordinateOnPath(torpedoCoordinate, state.TeamState[teamName].Dots),
+                    1019
+                ),
+                (
+                    MapHelpers.IsCoordinateOnObstacle(torpedoCoordinate, gridType),
+                    1020
+                ),
+                (
+                    assetTorpedo is not null && assetTorpedo.Slots.IsEmpty,
+                    1021
+                ),
+                (
+                    !MapHelpers.IsCoordinateWithinAllowedDistance(dots, playerCoordinate, torpedoCoordinate, Torpedo.MAX_RANGE),
+                    1022
                 )
             ], []);
         }

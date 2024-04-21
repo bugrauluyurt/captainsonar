@@ -8,5 +8,6 @@ namespace CaptainSonar.Common.Domain.Assets
 {
     public class Torpedo(int slotSize = 3) : Asset(AssetType.Attack, AssetName.Torpedo, slotSize)
     {
+        public static readonly int MAX_RANGE = 4;
     }
 }

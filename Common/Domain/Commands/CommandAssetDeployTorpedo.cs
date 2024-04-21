@@ -4,13 +4,13 @@ using CaptainSonar.Common.Domain.Map;
 
 namespace CaptainSonar.Common.Domain.Commands
 {
-    public class CommandAssetUseMineData
+    public class CommandAssetDeployTorpedoData
     {
         public TeamName TeamName { get; set; }
         public Coordinate Coordinate { get; set; } = null!;
     }
 
-    public class CommandAssetUseMine(CommandAssetUseMineData data) : Command<CommandAssetUseMineData>(CommandName.Asset_Use_Mine, data)
+    public class CommandAssetDeployTorpedo(CommandAssetDeployTorpedoData data) : Command<CommandAssetDeployTorpedoData>(CommandName.Asset_Deploy_Torpedo, data)
     {
     }
 }

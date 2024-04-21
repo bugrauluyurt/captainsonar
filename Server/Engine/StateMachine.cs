@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using CaptainSonar.Common.Domain.Assets;
 using CaptainSonar.Common.Domain.Commands;
 using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Common.Domain.Map;
@@ -274,7 +275,7 @@ namespace CaptainSonar.Server.Engine
             );
         }
 
-        public static StateExecutionStep ExecAssetIncrease(
+        public static StateExecutionStep ExecAssetLoad(
             StateExecutionStep stateExecutionStep,
             CommandAssetIncrease command)
         {
@@ -283,37 +284,61 @@ namespace CaptainSonar.Server.Engine
 
             return StateMachineHelper.ExecStep(
                 // Validator
-                () => StateValidator.ValidateAssetIncrease(stateExecutionStep, teamName, assetName),
+                () => StateValidator.ValidateAssetLoad(stateExecutionStep, teamName, assetName),
                 // Executor
                 (nextStep) =>
                 {
                     return StateMachineHelper.ComposeState(
                         nextStep,
                         [
-                            (stateNext) =>  StateHelper.IncreaseAsset(stateNext, teamName, assetName)
+                            (stateNext) =>  StateHelper.LoadAsset(stateNext, teamName, assetName)
                         ]
                     );
                 }
             );
         }
 
-        public static StateExecutionStep ExecAssetUseMine(
+        public static StateExecutionStep ExecAssetDeployMine(
             StateExecutionStep stateExecutionStep,
-            CommandAssetUseMine command)
+            CommandAssetDeployMine command)
         {
             var coordinate = command.Data.Coordinate;
             var teamName = command.Data.TeamName;
 
             return StateMachineHelper.ExecStep(
                 // Validator
-                () => StateValidator.ValidateAssetUseMine(stateExecutionStep, teamName, coordinate),
+                () => StateValidator.ValidateAssetDeployMine(stateExecutionStep, teamName, coordinate),
                 // Executor
                 (nextStep) =>
                 {
                     return StateMachineHelper.ComposeState(
                         nextStep,
                         [
-                            (stateNext) =>  StateHelper.UseAssetMine(stateNext, teamName, coordinate)
+                            (stateNext) =>  StateHelper.DeployAssetMine(stateNext, teamName, coordinate),
+                            (stateNext) =>  StateHelper.EmptyAsset(stateNext, teamName, AssetName.Mine)
+                        ]
+                    );
+                }
+            );
+        }
+
+        public static StateExecutionStep ExecAssetDeployTorpedo(
+            StateExecutionStep stateExecutionStep,
+            CommandAssetDeployTorpedo command)
+        {
+            var torpedoCoordinate = command.Data.Coordinate;
+            var teamName = command.Data.TeamName;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateAssetDeployTorpedo(stateExecutionStep, teamName, torpedoCoordinate),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.EmptyAsset(stateNext, teamName, AssetName.Torpedo)
                         ]
                     );
                 }

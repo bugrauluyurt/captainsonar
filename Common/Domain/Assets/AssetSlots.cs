@@ -10,14 +10,14 @@ namespace Common.Domain.Assets
         private readonly int _size = size;
         private int _currentSize = 0;
 
-        public bool IsFilled => _currentSize == _size;
+        public bool IsLoaded => _currentSize == _size;
         public bool IsEmpty => _currentSize == 0;
 
-        public void Increase()
+        public void Load()
         {
-            if (IsFilled)
+            if (IsLoaded)
             {
-                throw new InvalidOperationException("Asset slot is already filled");
+                throw new InvalidOperationException("Asset slot is already loaded");
             }
 
             _currentSize++;

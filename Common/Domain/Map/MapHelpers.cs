@@ -105,6 +105,12 @@ namespace CaptainSonar.Common.Domain.Map
             return Math.Abs(coordinate1.Row - coordinate2.Row) <= 1 && Math.Abs(coordinate1.Column - coordinate2.Column) <= 1;
         }
 
+        public static bool IsCoordinateWithinAllowedDistance(Dot[,] dots, Coordinate coordinate1, Coordinate coordinate2, int distance)
+        {
+            var shortestPathDistance = Pathfinder.FindShortestPathCount(dots, coordinate1, coordinate2);
+            return shortestPathDistance > 0 && shortestPathDistance <= distance;
+        }
+
         public static bool CanMove(
             Coordinate coordinateProspect,
             GridType mapType,
