@@ -22,6 +22,7 @@ namespace CaptainSonar.Common.Domain.Commands
         Asset_Deploy_Sonar,
         Asset_Deploy_Silence,
         Asset_Detonate_Mine,
-        Info_AddDots,
+        Info_Upsert,
+        Info_Remove,
     }
 }

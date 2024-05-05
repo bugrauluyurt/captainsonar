@@ -191,6 +191,41 @@ namespace CaptainSonar.Server.Engine
             return state;
         }
 
+        public static State UpsertInfo(State state, TeamName teamName, string? text, Coordinate? location, int? index)
+        {
+            if (index.HasValue)
+            {
+                if (index.Value < 0)
+                {
+                    return state;
+                }
+                if (index.Value >= state.TeamState[teamName].Info.Count)
+                {
+                    return state;
+                }
+                state.TeamState[teamName].Info[index.Value].Text = text ?? "";
+                state.TeamState[teamName].Info[index.Value].Location = location ?? null;
+                return state;
+            }
+            state.TeamState[teamName].Info.Add(new StateInfo
+            {
+                Location = location ?? null,
+                Text = text ?? ""
+            });
+            return state;
+        }
+
+        public static State RemoveInfo(State state, TeamName teamName, int infoIndex)
+        {
+            var info = state.TeamState[teamName].Info;
+            if (infoIndex < 0 || infoIndex >= info.Count)
+            {
+                return state;
+            }
+            info.RemoveAt(infoIndex);
+            return state;
+        }
+
         /*
         Commands List
         - Session_Start (Player) => The system is going to start the game. The player is going to be the first player of the first team. Create the state and the session.

@@ -369,7 +369,7 @@ namespace CaptainSonar.Server.Engine
 
         public static StateExecutionStep ExecAssetDeploySonar(
             StateExecutionStep stateExecutionStep,
-            CommandAssetDeployDrone command)
+            CommandAssetDeploySonar command)
         {
             var teamName = command.Data.TeamName;
 
@@ -383,29 +383,6 @@ namespace CaptainSonar.Server.Engine
                         nextStep,
                         [
                             (stateNext) =>  StateHelper.EmptyAsset(stateNext, teamName, AssetName.Sonar)
-                        ]
-                    );
-                }
-            );
-        }
-
-        public static StateExecutionStep ExecAssetDetonateMine(
-            StateExecutionStep stateExecutionStep,
-            CommandAssetDetonateMine command)
-        {
-            var mineCoordinate = command.Data.Coordinate;
-            var teamName = command.Data.TeamName;
-
-            return StateMachineHelper.ExecStep(
-                // Validator
-                () => StateValidator.ValidateAssetDetonateMine(stateExecutionStep, teamName, mineCoordinate),
-                // Executor
-                (nextStep) =>
-                {
-                    return StateMachineHelper.ComposeState(
-                        nextStep,
-                        [
-                            (stateNext) =>  StateHelper.DetonateAssetMine(stateNext, teamName, mineCoordinate)
                         ]
                     );
                 }
@@ -436,7 +413,75 @@ namespace CaptainSonar.Server.Engine
             );
         }
 
-        // @TODO: Write the other command execution logic here.
+        public static StateExecutionStep ExecAssetDetonateMine(
+            StateExecutionStep stateExecutionStep,
+            CommandAssetDetonateMine command)
+        {
+            var mineCoordinate = command.Data.Coordinate;
+            var teamName = command.Data.TeamName;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateAssetDetonateMine(stateExecutionStep, teamName, mineCoordinate),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.DetonateAssetMine(stateNext, teamName, mineCoordinate)
+                        ]
+                    );
+                }
+            );
+        }
+
+        public static StateExecutionStep ExecInfoUpsert(
+            StateExecutionStep stateExecutionStep,
+            CommandInfoUpsert command)
+        {
+            var teamName = command.Data.TeamName;
+            var text = command.Data.Text;
+            var location = command.Data.Location;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateInfoAdd(stateExecutionStep, location, text),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.UpsertInfo(stateNext, teamName, text, location, null)
+                        ]
+                    );
+                }
+            );
+        }
+
+        public static StateExecutionStep ExecInfoRemove(
+            StateExecutionStep stateExecutionStep,
+            CommandInfoRemove command)
+        {
+            var teamName = command.Data.TeamName;
+            var index = command.Data.Index;
+
+            return StateMachineHelper.ExecStep(
+                // Validator
+                () => StateValidator.ValidateInfoRemove(stateExecutionStep, teamName, index),
+                // Executor
+                (nextStep) =>
+                {
+                    return StateMachineHelper.ComposeState(
+                        nextStep,
+                        [
+                            (stateNext) =>  StateHelper.RemoveInfo(stateNext, teamName, index)
+                        ]
+                    );
+                }
+            );
+        }
 
         // ExecCommand takes a command and executes it on the current state while updates the state and the commands list.
         public static StateExecutionStep ExecCommand(
@@ -449,6 +494,20 @@ namespace CaptainSonar.Server.Engine
                 CommandSessionEnd commandEndGame => ExecSessionEnd(stateExecutionStep, commandEndGame),
                 CommandSessionQuit commandQuitGame => ExecSessionQuit(stateExecutionStep, commandQuitGame),
                 CommandSessionJoin commandSessionJoin => ExecSessionJoin(stateExecutionStep, commandSessionJoin),
+                CommandMapMove commandMapMove => ExecMapMove(stateExecutionStep, commandMapMove),
+                CommandMapSurface commandMapSurface => ExecMapSurface(stateExecutionStep, commandMapSurface),
+                CommandRoomUnitDamage commandRoomUnitDamage => ExecRoomUnitDamage(stateExecutionStep, commandRoomUnitDamage),
+                CommandRoomUnitsRepair commandRoomUnitsRepair => ExecRoomUnitsRepair(stateExecutionStep, commandRoomUnitsRepair),
+                CommandRoomUnitsRepairByType commandRoomUnitsRepairByType => ExecRoomUnitsRepairByType(stateExecutionStep, commandRoomUnitsRepairByType),
+                CommandAssetIncrease commandAssetLoad => ExecAssetLoad(stateExecutionStep, commandAssetLoad),
+                CommandAssetDeployMine commandAssetDeployMine => ExecAssetDeployMine(stateExecutionStep, commandAssetDeployMine),
+                CommandAssetDeployTorpedo commandAssetDeployTorpedo => ExecAssetDeployTorpedo(stateExecutionStep, commandAssetDeployTorpedo),
+                CommandAssetDeployDrone commandAssetDeployDrone => ExecAssetDeployDrone(stateExecutionStep, commandAssetDeployDrone),
+                CommandAssetDeploySonar commandAssetDeploySonar => ExecAssetDeploySonar(stateExecutionStep, commandAssetDeploySonar),
+                CommandAssetDeploySilence commandAssetDeploySilence => ExecAssetDeploySilence(stateExecutionStep, commandAssetDeploySilence),
+                CommandAssetDetonateMine commandAssetDetonateMine => ExecAssetDetonateMine(stateExecutionStep, commandAssetDetonateMine),
+                CommandInfoUpsert commandInfoUpsert => ExecInfoUpsert(stateExecutionStep, commandInfoUpsert),
+                CommandInfoRemove commandInfoRemove => ExecInfoRemove(stateExecutionStep, commandInfoRemove),
                 _ => throw new InvalidOperationException("Invalid command")
             };
 

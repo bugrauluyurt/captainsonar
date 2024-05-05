@@ -17,10 +17,10 @@ namespace CaptainSonar.Server.Engine
         Finished
     }
 
-    public class StateDotInfo
+    public class StateInfo
     {
-        public required Dot Dot { get; init; }
-        public string Info { get; set; } = "";
+        public required Coordinate? Location { get; set; } = null;
+        public string Text { get; set; } = "";
     }
 
     public class StateMine
@@ -36,7 +36,7 @@ namespace CaptainSonar.Server.Engine
         public List<Player> Players { get; } = []; // The players in the team.
         public List<string> Notes { get; } = []; // the list of notes the player is taking.
         public List<StateMine> Mines { get; } = []; // the list of mines the player has set.
-        public List<StateDotInfo> DotsInfo { get; set; } = []; // the list of dots that are marked for information purposes. These dots can be enenmy location or any other.
+        public List<StateInfo> Info { get; set; } = []; // the list of information text which can be tied to dots.
     }
 
     public class Turn

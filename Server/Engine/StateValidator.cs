@@ -381,6 +381,48 @@ namespace CaptainSonar.Server.Engine
             ], []);
         }
 
+        public static StateExecutionStep ValidateInfoAdd(
+            StateExecutionStep stateExecutionStep,
+            Coordinate location,
+            string text)
+        {
+            var state = stateExecutionStep.State;
+            var grid = state.Grid;
+            var gridType = grid.MapType;
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    location is null && string.IsNullOrEmpty(text),
+                    1021
+                ),
+                (
+                    location is not null && !MapHelpers.IsCoordinateInBounds(location, gridType),
+                    1008
+                ),
+                (
+                    !string.IsNullOrEmpty(text) && text.Length > 300,
+                    1028
+                )
+            ], []);
+        }
+
+        public static StateExecutionStep ValidateInfoRemove(
+            StateExecutionStep stateExecutionStep,
+            TeamName teamName,
+            int index)
+        {
+            var state = stateExecutionStep.State;
+            var grid = state.Grid;
+            var infoList = state.TeamState[teamName].Info;
+
+            return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    infoList[index] is null || index < 0 || index >= infoList.Count,
+                    1029
+                ),
+            ], []);
+        }
+
 
 
         // ValidateMapMove(StateExecutionStep stateExecutionStep, TeamName teamName, Coordinate coordinate)
