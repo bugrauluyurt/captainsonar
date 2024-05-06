@@ -14,12 +14,13 @@ namespace CaptainSonar.Server.Engine
             List<(bool, int)> conditionsForInformatives)
         {
             // Exceptions block the state execution.
-            List<SystemException> exceptions = [];
+            List<(int, string)> exceptions = [];
             foreach (var conditionForException in conditionsForExceptions)
             {
                 if (conditionForException.Item1)
                 {
-                    exceptions.Add(new InvalidOperationException(StateDiagnosticsCode.GetDiagnosticMessageByCode(conditionForException.Item2)));
+                    var diagnosticMessage = StateDiagnosticsCode.GetDiagnosticMessageByCode(conditionForException.Item2);
+                    exceptions.Add((conditionForException.Item2, diagnosticMessage));
                 }
             }
 
@@ -39,14 +40,14 @@ namespace CaptainSonar.Server.Engine
 
         private static StateExecutionStep GenerateDiagnostics(
             StateExecutionStep stateExecutionStep,
-            List<SystemException> exceptions,
+            List<(int, string)> exceptions,
             List<(int, string)> informatives
             )
         {
             List<StateDiagnostic> diagnosticsExceptionsNext = stateExecutionStep.StateDiagnosticsExceptions;
             for (int i = 0; i < exceptions.Count; i++)
             {
-                diagnosticsExceptionsNext.Add(new StateDiagnostic { Exception = exceptions[i] });
+                diagnosticsExceptionsNext.Add(new StateDiagnostic { DiagnosticMessage = exceptions[i].Item2, DiagnosticCode = exceptions[i].Item1 });
             }
 
             List<StateDiagnostic> diagnosticsInformativesNext = stateExecutionStep.StateDiagnosticsInformatives;

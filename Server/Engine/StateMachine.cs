@@ -22,7 +22,6 @@ namespace CaptainSonar.Server.Engine
 
     public class StateDiagnostic
     {
-        public SystemException? Exception { get; set; }
         public string? DiagnosticMessage { get; set; }
         public int? DiagnosticCode { get; set; }
     }

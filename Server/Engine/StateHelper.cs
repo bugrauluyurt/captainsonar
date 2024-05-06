@@ -11,7 +11,7 @@ using CaptainSonar.Common.Domain.Assets;
 
 namespace CaptainSonar.Server.Engine
 {
-    static class StateHelper
+    public static class StateHelper
     {
         public static State CreateState(Grid grid)
         {
