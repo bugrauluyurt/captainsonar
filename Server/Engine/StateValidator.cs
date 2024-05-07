@@ -128,7 +128,8 @@ namespace CaptainSonar.Server.Engine
             TeamName teamName)
         {
             var state = stateExecutionStep.State;
-            var lastKnownDot = state.TeamState[teamName].Dots.Last();
+            var dots = state.TeamState[teamName].Dots;
+            var lastKnownDot = dots.Count == 0 ? null : dots.Last();
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
