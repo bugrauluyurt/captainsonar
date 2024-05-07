@@ -12,16 +12,28 @@ using CaptainSonar.Tests.Utils;
 
 namespace CaptainSonar.Tests.Server.Engine
 {
-    public class StateValidatorTest
+    public class StateMachineTest
     {
+        [Fact]
+        public void ValidateSessionStart_WithPlayer_AddsPlayerToTeam()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var commandSessionStart = new CommandSessionStart(new CommandSessionStartData() { Player = new Player() { Name = "Player 1", Id = "1" } });
+
+            var nextState = StateMachine.ExecCommand(commandSessionStart, stateExecutionStep);
+            Assert.Single(nextState.State.TeamState[TeamName.Team1].Players);
+            Assert.Equal("Player 1", nextState.State.TeamState[TeamName.Team1].Players[0].Name);
+        }
 
         [Fact]
-        public void ValidateSessionStartt_WithNullPlayer_AddsPlayerToTeam()
+        public void ValidateSessionStart_WithPlayer_StartsTheSession()
         {
-            var StateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
             var commandSessionStart = new CommandSessionStart(new CommandSessionStartData() { Player = new Player() { Name = "Player 1", Id = "1" } });
-            Assert.Single(StateMachine.ExecCommand(commandSessionStart, StateExecutionStep).State.TeamState[TeamName.Team1].Players);
-            Assert.Equal("Player 1", StateExecutionStep.State.TeamState[TeamName.Team1].Players[0].Name);
+
+            var nextState = StateMachine.ExecCommand(commandSessionStart, stateExecutionStep);
+            Assert.Equal(GameStatus.InProgress, nextState.State.Status);
+            Assert.Equal(TeamName.Team1, nextState.State.Turn?.Team);
         }
     }
 }
