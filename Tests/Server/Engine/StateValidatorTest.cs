@@ -9,6 +9,7 @@ using CaptainSonar.Common.Domain.Map;
 using CaptainSonar.Common.Domain.Commands;
 using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Tests.Utils;
+using CaptainSonar.Common.Domain.Vessel;
 
 namespace CaptainSonar.Tests.Server.Engine
 {
@@ -100,6 +101,99 @@ namespace CaptainSonar.Tests.Server.Engine
             var validatedState = StateValidator.ValidateMapSurface(stateExecutionStep, TeamName.Team1);
             var isCanNotSurfaceErrorGenerated = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1011);
             Assert.True(isCanNotSurfaceErrorGenerated);
+        }
+
+        [Fact]
+        public void ValidateRoomUnitDamage_WithInvalidId_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var roomUnitPositionId = "Front:UP1";
+            var validatedState = StateValidator.ValidateRoomUnitDamage(stateExecutionStep, roomUnitPositionId);
+            var hasRoomUnitIdError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1013);
+            Assert.False(hasRoomUnitIdError);
+
+            var roomUnitPositionIdWithError = "Something:UP1";
+            var validatedState2 = StateValidator.ValidateRoomUnitDamage(stateExecutionStep, roomUnitPositionIdWithError);
+            var hasRoomUnitIdError2 = validatedState2.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1013);
+            Assert.True(hasRoomUnitIdError2);
+        }
+
+        [Fact]
+        public void ValidateRoomUnitsRepair_WithInvalidId_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var roomUnitPositionIds = new List<string>() { "Front:UP1", "FrontMiddle:UP2" };
+            var validatedState = StateValidator.ValidateRoomUnitsRepair(stateExecutionStep, roomUnitPositionIds);
+            var hasRoomUnitIdError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1013);
+            Assert.False(hasRoomUnitIdError);
+
+            var roomUnitPositionIdsWithError = new List<string>() { "Front:UP1", "Something:UP2" };
+            var validatedState2 = StateValidator.ValidateRoomUnitsRepair(stateExecutionStep, roomUnitPositionIdsWithError);
+            var hasRoomUnitIdError2 = validatedState2.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1013);
+            Assert.True(hasRoomUnitIdError2);
+        }
+
+        [Fact]
+        public void ValidateRoomUnitsByRepairType_WithValidRoomUnit_HasNoError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var validatedState = StateValidator.ValidateRoomUnitsRepairByType(stateExecutionStep, TeamName.Team1, RoomUnitType.Orange);
+            var hasRoomUnitTypeError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1014);
+            Assert.False(hasRoomUnitTypeError);
+        }
+
+        [Fact]
+        public void ValidateRoomUnitsByRepairType_WithUnlinkedRoomUnitType_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var validatedState = StateValidator.ValidateRoomUnitsRepairByType(stateExecutionStep, TeamName.Team1, RoomUnitType.Unlinked);
+            var hasRoomUnitTypeError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1015);
+            Assert.True(hasRoomUnitTypeError);
+        }
+
+        [Fact]
+        public void ValidateRoomUnitsByRepairType_WithAllUnitsDamaged_HasNoError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Vessel.DamageRoomUnitsByRoomUnitType(RoomUnitType.Orange);
+
+            var validatedState = StateValidator.ValidateRoomUnitsRepairByType(stateExecutionStep, TeamName.Team1, RoomUnitType.Orange);
+            var hasError = validatedState.StateDiagnosticsExceptions.Count > 0;
+            Assert.False(hasError);
+        }
+
+        [Fact]
+        public void ValidateRoomUnitsByRepairType_WithSomeUnitsDamaged_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Vessel.DamageRoomUnitsByRoomUnitType(RoomUnitType.Orange);
+            RoomUnit? orangeRoomUnit = null;
+            _ = stateExecutionStep.State.TeamState[TeamName.Team1].Vessel.Rooms.Any(room =>
+            {
+                // Find the room with Orange room units
+                return room.GetRoomUnits().Any(roomUnit =>
+                {
+                    var isRoomUnitOrange = roomUnit.RoomUnitType == RoomUnitType.Orange;
+                    if (isRoomUnitOrange)
+                    {
+                        orangeRoomUnit = roomUnit;
+                    }
+                    return isRoomUnitOrange;
+                });
+            });
+
+            if (orangeRoomUnit is not null)
+            {
+                orangeRoomUnit.Repair();
+            }
+
+            var validatedState = StateValidator.ValidateRoomUnitsRepairByType(stateExecutionStep, TeamName.Team1, RoomUnitType.Orange);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1016);
+            Assert.True(hasError);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace CaptainSonar.Common.Domain.Vessel
             string[]? positions = roomUnitPositionId.Split(":");
             string roomPositionString = positions.ElementAtOrDefault(0) ?? "";
             string roomUnitPositionString = positions.ElementAtOrDefault(1) ?? "";
-            return VesselHelpers.IsRoomUnitPositionStringValid(roomUnitPositionString) && VesselHelpers.IsRoomUnitPositionStringValid(roomPositionString);
+            return VesselHelpers.IsRoomUnitPositionStringValid(roomUnitPositionString) && VesselHelpers.IsRoomPositionStringValid(roomPositionString);
         }
     }
 }
