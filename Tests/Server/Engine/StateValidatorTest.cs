@@ -212,5 +212,15 @@ namespace CaptainSonar.Tests.Server.Engine
             var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1018);
             Assert.True(hasError);
         }
+
+        [Fact]
+        public void ValidateAssetDeployMine_WithCoordinateOutOfBounds_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var validatedState = StateValidator.ValidateAssetDeployMine(stateExecutionStep, TeamName.Team1, new Coordinate(0, 16));
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1008);
+            Assert.True(hasError);
+        }
     }
 }
