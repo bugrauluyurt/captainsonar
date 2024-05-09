@@ -32,5 +32,15 @@ namespace Common.Domain.Assets
 
             _currentSize = 0;
         }
+
+        public int GetRemainingSize()
+        {
+            return _size - _currentSize;
+        }
+
+        public int GetTotalSize()
+        {
+            return _size;
+        }
     }
 }

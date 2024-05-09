@@ -10,6 +10,7 @@ using CaptainSonar.Common.Domain.Commands;
 using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Tests.Utils;
 using CaptainSonar.Common.Domain.Vessel;
+using CaptainSonar.Common.Domain.Assets;
 
 namespace CaptainSonar.Tests.Server.Engine
 {
@@ -193,6 +194,22 @@ namespace CaptainSonar.Tests.Server.Engine
 
             var validatedState = StateValidator.ValidateRoomUnitsRepairByType(stateExecutionStep, TeamName.Team1, RoomUnitType.Orange);
             var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1016);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetLoad_WithAllAssetsLoaded_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            foreach (var item in stateExecutionStep.State.TeamState[TeamName.Team1].Assets)
+            {
+                for (int i = 0; i < item.Slots.GetTotalSize(); i++)
+                {
+                    item.Slots.Load();
+                }
+            }
+            var validatedState = StateValidator.ValidateAssetLoad(stateExecutionStep, TeamName.Team1, AssetName.Mine);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1018);
             Assert.True(hasError);
         }
     }
