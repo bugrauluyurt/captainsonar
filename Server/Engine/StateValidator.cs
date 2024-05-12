@@ -256,10 +256,14 @@ namespace CaptainSonar.Server.Engine
             var grid = state.Grid;
             var gridType = grid.MapType;
             var assetTorpedo = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Torpedo);
-            var playerCoordinate = state.TeamState[teamName].Dots.Last().Location;
+            var playerCoordinate = state.TeamState[teamName].Dots.Count == 0 ? null : state.TeamState[teamName].Dots.Last().Location;
             var dots = stateExecutionStep.State.Grid.GetDots();
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
+                (
+                    playerCoordinate is null,
+                    1012
+                ),
                 (
                     !MapHelpers.IsCoordinateInBounds(torpedoCoordinate, gridType),
                     1008
@@ -277,7 +281,7 @@ namespace CaptainSonar.Server.Engine
                     1021
                 ),
                 (
-                    !MapHelpers.IsCoordinateWithinAllowedDistance(dots, playerCoordinate, torpedoCoordinate, Torpedo.MAX_RANGE),
+                    playerCoordinate is not null && !MapHelpers.IsCoordinateWithinAllowedDistance(dots, playerCoordinate, torpedoCoordinate, Torpedo.MAX_RANGE),
                     1022
                 )
             ], []);
@@ -325,22 +329,30 @@ namespace CaptainSonar.Server.Engine
             var gridType = grid.MapType;
             var assetSilence = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Silence);
             var playerDots = state.TeamState[teamName].Dots;
-            var playerLastCoordinate = state.TeamState[teamName].Dots.Last().Location;
+            var playerLastCoordinate = state.TeamState[teamName].Dots.Count == 0 ? null : state.TeamState[teamName].Dots.Last().Location;
             var coordinatesJumpedLastCoordinate = coordinatesJumped.Last();
             var dots = stateExecutionStep.State.Grid.GetDots();
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
+                    playerLastCoordinate is null,
+                    1012
+                ),
+                (
                     assetSilence is not null && assetSilence.Slots.IsEmpty,
                     1021
                 ),
                 (
-                    !MapHelpers.IsCoordinateWithinAllowedDistance(dots, playerLastCoordinate, coordinatesJumpedLastCoordinate, Silence.MAX_RANGE),
+                    playerLastCoordinate is not null && !MapHelpers.IsCoordinateWithinAllowedDistance(dots, playerLastCoordinate, coordinatesJumpedLastCoordinate, Silence.MAX_RANGE),
                     1022
                 ),
                 (
-                    !MapHelpers.IsCoordinateAdjacent(playerLastCoordinate, coordinatesJumped.First()),
+                    playerLastCoordinate is not null && !MapHelpers.IsCoordinateAdjacent(playerLastCoordinate, coordinatesJumped.First()),
                     1024
+                ),
+                (
+                    !MapHelpers.IsCoordinateListAdjacent(coordinatesJumped),
+                    1030
                 ),
                 (
                     !MapHelpers.IsCoordinateListValid(coordinatesJumped, gridType, playerDots),
@@ -358,8 +370,6 @@ namespace CaptainSonar.Server.Engine
             var grid = state.Grid;
             var gridType = grid.MapType;
             var assetMine = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Mine);
-            var playerCoordinate = state.TeamState[teamName].Dots.Last().Location;
-            var dots = stateExecutionStep.State.Grid.GetDots();
             var mine = state.TeamState[teamName].Mines.FirstOrDefault(mine => mine.Dot.Location.ToString() == mineCoordinate.ToString());
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
@@ -384,24 +394,25 @@ namespace CaptainSonar.Server.Engine
 
         public static StateExecutionStep ValidateInfoAdd(
             StateExecutionStep stateExecutionStep,
-            Coordinate location,
-            string text)
+            Coordinate? location,
+            string? text)
         {
             var state = stateExecutionStep.State;
             var grid = state.Grid;
             var gridType = grid.MapType;
+            var textGenerated = text ?? "";
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
-                    location is null && string.IsNullOrEmpty(text),
-                    1021
+                    location is null && string.IsNullOrEmpty(textGenerated),
+                    1027
                 ),
                 (
                     location is not null && !MapHelpers.IsCoordinateInBounds(location, gridType),
                     1008
                 ),
                 (
-                    !string.IsNullOrEmpty(text) && text.Length > 300,
+                    !string.IsNullOrEmpty(textGenerated) && textGenerated.Length > 300,
                     1028
                 )
             ], []);
@@ -413,7 +424,6 @@ namespace CaptainSonar.Server.Engine
             int index)
         {
             var state = stateExecutionStep.State;
-            var grid = state.Grid;
             var infoList = state.TeamState[teamName].Info;
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [

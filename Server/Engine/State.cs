@@ -25,7 +25,7 @@ namespace CaptainSonar.Server.Engine
 
     public class StateMine
     {
-        public required Dot Dot { get; set; }
+        public required Dot Dot { get; init; }
     }
 
     public class TeamState

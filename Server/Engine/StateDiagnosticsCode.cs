@@ -35,9 +35,10 @@ namespace CaptainSonar.Server.Engine
             { 1024, "Player's last coordinate and the first coordinate provided in the list are not adjacent." },
             { 1025, "A mine already exists in that location." },
             { 1026, "A mine does not exist on given coordinates." },
-            { 1027, "Info can not be empty. Either send a location." },
+            { 1027, "Either info text or the locations should be provided." },
             { 1028, "String length can not exceed the limits." },
             { 1029, "Index is not valid." },
+            { 1030, "One of the coordinates in the given list is not adjacent." },
             // Informatives
             { 2001, "Coordinate is on a mine" },
             { 2002, "Coordinate is on a self put mine" },

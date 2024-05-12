@@ -222,5 +222,206 @@ namespace CaptainSonar.Tests.Server.Engine
             var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1008);
             Assert.True(hasError);
         }
+
+        [Fact]
+        public void ValidateAssetDeployMine_WithCoordinateOnPath_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var coordinate = new Coordinate(0, 2);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(coordinate));
+
+            var validatedState = StateValidator.ValidateAssetDeployMine(stateExecutionStep, TeamName.Team1, coordinate);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1019);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeployMine_WithCoordinateOnObstacle_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var coordinate = new Coordinate(1, 2);
+
+            var validatedState = StateValidator.ValidateAssetDeployMine(stateExecutionStep, TeamName.Team1, coordinate);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1020);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeployMine_WithEmptyMineSlots_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var coordinate = new Coordinate(0, 2);
+
+            var validatedState = StateValidator.ValidateAssetDeployMine(stateExecutionStep, TeamName.Team1, coordinate);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1021);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeployMine_WithMineAlreadyDeployed_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var coordinate = new Coordinate(0, 2);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Mines.Add(new StateMine() { Dot = new Dot(coordinate) });
+
+            var validatedState = StateValidator.ValidateAssetDeployMine(stateExecutionStep, TeamName.Team1, coordinate);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1025);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeployTorpedo_WithEmptyTorpedoSlots_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var coordinate = new Coordinate(0, 2);
+            var pathCoordinate = new Coordinate(0, 1);
+
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(pathCoordinate));
+
+            var validatedState = StateValidator.ValidateAssetDeployTorpedo(stateExecutionStep, TeamName.Team1, coordinate);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1021);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeployTorpedo_WithInvalidDistance_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var pathCoordinate = new Coordinate(0, 2);
+            var torpedoCoordinateInvalid = new Coordinate(4, 3);
+            var torpedoCoordinateValid = new Coordinate(4, 2);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(pathCoordinate));
+
+            var validatedState = StateValidator.ValidateAssetDeployTorpedo(stateExecutionStep, TeamName.Team1, torpedoCoordinateInvalid);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1022);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeployTorpedo_WithNoMoveYet_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var torpedoCoordinateValid = new Coordinate(4, 2);
+
+            var validatedState = StateValidator.ValidateAssetDeployTorpedo(stateExecutionStep, TeamName.Team1, torpedoCoordinateValid);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1012);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeployDrone_WithEmptyDroneSlots_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var validatedState = StateValidator.ValidateAssetDeployDrone(stateExecutionStep, TeamName.Team1);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1021);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeploySonar_WithEmptySlots_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var validatedState = StateValidator.ValidateAssetDeploySonar(stateExecutionStep, TeamName.Team1);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1021);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeploySilence_WithEmptySlotsAndNoPlayerCoordinate_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            Coordinate userCoordinate = new(0, 0);
+            List<Coordinate> coordinateListJumped = [new Coordinate(0, 1), new Coordinate(0, 2), new Coordinate(1, 2)];
+
+            var validatedState = StateValidator.ValidateAssetDeploySilence(stateExecutionStep, TeamName.Team1, coordinateListJumped);
+            var hasEmptyAssetError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1021);
+            var hasPlayerNoCoordinateError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1012);
+            Assert.True(hasEmptyAssetError);
+            Assert.True(hasPlayerNoCoordinateError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeploySilence_WithFirstCoordinateIsNotAdjacent_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            Coordinate userCoordinate = new(0, 0);
+            List<Coordinate> coordinateListJumped = [new Coordinate(0, 2), new Coordinate(0, 3), new Coordinate(0, 4)];
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(userCoordinate));
+
+            var validatedState = StateValidator.ValidateAssetDeploySilence(stateExecutionStep, TeamName.Team1, coordinateListJumped);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1024);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDeploySilence_WithInvalidDistance_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            Coordinate userCoordinate = new(0, 0);
+            List<Coordinate> coordinateListJumped = [new Coordinate(0, 2), new Coordinate(0, 3), new Coordinate(0, 5)];
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(userCoordinate));
+
+            var validatedState = StateValidator.ValidateAssetDeploySilence(stateExecutionStep, TeamName.Team1, coordinateListJumped);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1022);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDetonateMine_WithEmptySlots_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            Coordinate mineCoordinate = new(0, 1);
+
+            var validatedState = StateValidator.ValidateAssetDetonateMine(stateExecutionStep, TeamName.Team1, mineCoordinate);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1021);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateAssetDetonateMine_WithNoMineOnCoordinate_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            Coordinate mineCoordinate = new(0, 1);
+
+            var validatedState = StateValidator.ValidateAssetDetonateMine(stateExecutionStep, TeamName.Team1, mineCoordinate);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1026);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateInfoAdd_WithStringExceedingLimits_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            Coordinate infoCoordinate = new(0, 2);
+            var text = "";
+            for (int i = 0; i < 301; i++)
+            {
+                text += "a";
+            }
+
+            var validatedState = StateValidator.ValidateInfoAdd(stateExecutionStep, infoCoordinate, text);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1028);
+            Assert.True(hasError);
+        }
+
+        [Fact]
+        public void ValidateInfoRemove_WithInvalidIndex_ReturnsError()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Info.Add(new StateInfo() { Location = new Coordinate(0, 2), Text = "Test" });
+
+            var validatedState = StateValidator.ValidateInfoRemove(stateExecutionStep, TeamName.Team1, 2);
+            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1029);
+            Assert.True(hasError);
+        }
     }
 }
