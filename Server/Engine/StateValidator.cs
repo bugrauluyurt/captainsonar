@@ -428,7 +428,7 @@ namespace CaptainSonar.Server.Engine
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
-                    infoList[index] is null || index < 0 || index >= infoList.Count,
+                    index >= infoList.Count || index < 0  || infoList[index] is null,
                     1029
                 ),
             ], []);

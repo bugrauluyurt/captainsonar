@@ -9,7 +9,7 @@ namespace CaptainSonar.Common.Domain.Commands
 {
     public class CommandSessionQuitData
     {
-        public Player Player { get; } = null!;
+        public Player Player { get; set; } = null!;
     }
 
     public class CommandSessionQuit(CommandSessionQuitData data) : Command<CommandSessionQuitData>(CommandName.Session_Quit, data)

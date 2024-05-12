@@ -15,7 +15,7 @@ namespace CaptainSonar.Tests.Server.Engine
     public class StateMachineTest
     {
         [Fact]
-        public void ValidateSessionStart_WithPlayer_AddsPlayerToTeam()
+        public void ExecSessionStart_WithPlayer_AddsPlayerToTeam()
         {
             var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
             var commandSessionStart = new CommandSessionStart(new CommandSessionStartData() { Player = new Player() { Name = "Player 1", Id = "1" } });
@@ -26,7 +26,7 @@ namespace CaptainSonar.Tests.Server.Engine
         }
 
         [Fact]
-        public void ValidateSessionStart_WithPlayer_StartsTheSession()
+        public void ExecSessionStart_WithPlayer_StartsTheSession()
         {
             var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
             var commandSessionStart = new CommandSessionStart(new CommandSessionStartData() { Player = new Player() { Name = "Player 1", Id = "1" } });
@@ -34,6 +34,32 @@ namespace CaptainSonar.Tests.Server.Engine
             var nextState = StateMachine.ExecCommand(commandSessionStart, stateExecutionStep);
             Assert.Equal(GameStatus.InProgress, nextState.State.Status);
             Assert.Equal(TeamName.Team1, nextState.State.Turn?.Team);
+        }
+
+        [Fact]
+        public void ExecSessionEnd_WithPlayer_RemovesPlayerFromGame()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var player = new Player() { Name = "Player 1", Id = "1" };
+            stateExecutionStep.State.TeamState[TeamName.Team1].Players.Add(player);
+            var commandSessionEnd = new CommandSessionEnd(new CommandSessionEndData() { Player = player });
+
+            var nextState = StateMachine.ExecCommand(commandSessionEnd, stateExecutionStep);
+            var isPlayerInTeam = nextState.State.TeamState[TeamName.Team1].Players.Any(p => p.Id == "1");
+            Assert.False(isPlayerInTeam);
+        }
+
+        [Fact]
+        public void ExecSessionQuit_WithPlayer_RemovesPlayerFromGame()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var player = new Player() { Name = "Player 1", Id = "1" };
+            stateExecutionStep.State.TeamState[TeamName.Team1].Players.Add(player);
+            var commandSessionQuit = new CommandSessionQuit(new CommandSessionQuitData() { Player = player });
+
+            var nextState = StateMachine.ExecCommand(commandSessionQuit, stateExecutionStep);
+            var isPlayerInTeam = nextState.State.TeamState[TeamName.Team1].Players.Any(p => p.Id == "1");
+            Assert.False(isPlayerInTeam);
         }
     }
 }

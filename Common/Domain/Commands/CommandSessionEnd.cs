@@ -9,7 +9,7 @@ namespace CaptainSonar.Common.Domain.Commands
 {
     public class CommandSessionEndData
     {
-        public Player Player { get; } = null!;
+        public Player Player { get; set; } = null!;
     }
 
     public class CommandSessionEnd(CommandSessionEndData data) : Command<CommandSessionEndData>(CommandName.Session_End, data)
