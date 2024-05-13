@@ -9,8 +9,8 @@ namespace CaptainSonar.Common.Domain.Commands
 {
     public class CommandRoomUnitsRepairByTypeData
     {
-        public TeamName TeamName { get; set; }
-        public RoomUnitType RoomUnitType { get; set; }
+        public required TeamName TeamName { get; set; }
+        public required RoomUnitType RoomUnitType { get; set; }
     }
 
     public class CommandRoomUnitsRepairByType(CommandRoomUnitsRepairByTypeData data) : Command<CommandRoomUnitsRepairByTypeData>(CommandName.RoomUnits_RepairByType, data)

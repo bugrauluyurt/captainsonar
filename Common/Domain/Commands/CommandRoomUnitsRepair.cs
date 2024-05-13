@@ -10,8 +10,8 @@ namespace CaptainSonar.Common.Domain.Commands
 {
     public class CommandRoomUnitsRepairData
     {
-        public TeamName TeamName { get; set; }
-        public List<string> RoomUnitPositionIds { get; set; } = null!;
+        public required TeamName TeamName { get; set; }
+        public required List<string> RoomUnitPositionIds { get; set; } = null!;
     }
 
     public class CommandRoomUnitsRepair(CommandRoomUnitsRepairData data) : Command<CommandRoomUnitsRepairData>(CommandName.RoomUnits_Repair, data)

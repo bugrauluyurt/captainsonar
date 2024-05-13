@@ -11,7 +11,6 @@ namespace CaptainSonar.Common.Domain.Commands
     public class CommandMapSurfaceData
     {
         public TeamName TeamName { get; set; }
-        public Coordinate Coordinate { get; set; } = null!;
     }
 
     public class CommandMapSurface(CommandMapSurfaceData data) : Command<CommandMapSurfaceData>(CommandName.Map_Surface, data)

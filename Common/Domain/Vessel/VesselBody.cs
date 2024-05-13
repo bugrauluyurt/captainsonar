@@ -22,7 +22,7 @@ namespace CaptainSonar.Common.Domain.Vessel
 
         public bool IsAllRoomUnitsWithRoomUnitTypeDamaged(RoomUnitType roomUnitType)
         {
-            return Rooms.All(room => room.GetRoomUnits().All(roomUnit => 
+            return Rooms.All(room => room.GetRoomUnits().All(roomUnit =>
             {
                 if (roomUnit.RoomUnitType == roomUnitType)
                 {
@@ -78,6 +78,14 @@ namespace CaptainSonar.Common.Domain.Vessel
         public void RepairRoomUnitsByRoomUnitType(RoomUnitType roomUnitType)
         {
             Rooms.ForEach(room => room.RepairRoomUnitsByRoomUnitType(roomUnitType));
+        }
+
+        public bool IsRoomUnitDamaged(string roomUnitPositionId)
+        {
+            var roomPosition = VesselHelpers.GetRoomPositionByRoomUnitPositionId(roomUnitPositionId);
+            var room = FindRoomRoomByPosition(roomPosition);
+            var roomUnit = room.GetRoomUnits().FirstOrDefault(roomUnit => roomUnit.PositionId == roomUnitPositionId);
+            return roomUnit?.IsDamaged() ?? false;
         }
     }
 }

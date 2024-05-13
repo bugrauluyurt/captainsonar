@@ -9,6 +9,7 @@ using CaptainSonar.Common.Domain.Map;
 using CaptainSonar.Common.Domain.Commands;
 using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Tests.Utils;
+using CaptainSonar.Common.Domain.Vessel;
 
 namespace CaptainSonar.Tests.Server.Engine
 {
@@ -60,6 +61,103 @@ namespace CaptainSonar.Tests.Server.Engine
             var nextState = StateMachine.ExecCommand(commandSessionQuit, stateExecutionStep);
             var isPlayerInTeam = nextState.State.TeamState[TeamName.Team1].Players.Any(p => p.Id == "1");
             Assert.False(isPlayerInTeam);
+        }
+
+
+        [Fact]
+        public void ExecMapMove_WithValidDirection_MovesToTeamToDirection()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var playerLastCoordinate = new Coordinate(1, 1);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(playerLastCoordinate));
+            var commandMapMove = new CommandMapMove(new CommandMapMoveData() { TeamName = TeamName.Team1, Direction = Direction.North });
+
+            var nextState = StateMachine.ExecCommand(commandMapMove, stateExecutionStep);
+            var lastDot = nextState.State.TeamState[TeamName.Team1].Dots.Last().ToString();
+            Assert.Equal("0:1", lastDot);
+        }
+
+        [Fact]
+        public void ExecMapSurface_WithValidDots_RoomsRepairedDotCleared()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var playerLastCoordinate = new Coordinate(1, 1);
+            var positionId = "Front:UP1";
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(playerLastCoordinate));
+
+            stateExecutionStep.State.TeamState[TeamName.Team1].Vessel.DamageRoomUnitByPositionId(positionId);
+
+            var commandMapSurface = new CommandMapSurface(new CommandMapSurfaceData() { TeamName = TeamName.Team1 });
+
+            var nextState = StateMachine.ExecCommand(commandMapSurface, stateExecutionStep);
+            var isDotsEmpty = nextState.State.TeamState[TeamName.Team1].Dots.Count == 0;
+            var isRoomDamaged = nextState.State.TeamState[TeamName.Team1].Vessel.FindRoomRoomByPosition(RoomPosition.Front).GetRoomUnits().Any(roomUnit => roomUnit.PositionId == positionId && roomUnit.IsDamaged());
+
+            Assert.False(isRoomDamaged);
+            Assert.True(isDotsEmpty);
+        }
+
+        [Fact]
+        public void ExecRoomUnitDamage_WithRoomPositionId_RoomsIsDamaged()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var positionId = "Front:UP1";
+
+            var commandRoomUnitDamage = new CommandRoomUnitDamage(new CommandRoomUnitDamageData() { TeamName = TeamName.Team1, RoomUnitPositionId = positionId });
+
+            var nextState = StateMachine.ExecCommand(commandRoomUnitDamage, stateExecutionStep);
+            var isRoomDamaged = nextState.State.TeamState[TeamName.Team1].Vessel.FindRoomRoomByPosition(RoomPosition.Front).GetRoomUnits().Any(roomUnit => roomUnit.PositionId == positionId && roomUnit.IsDamaged());
+
+            Assert.True(isRoomDamaged);
+        }
+
+        [Fact]
+        public void ExecRoomUnitRepair_WithRoomPositionId_RoomsIsRepaired()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var positionId = "Front:UP1";
+
+            var commandRoomUnitDamage = new CommandRoomUnitDamage(new CommandRoomUnitDamageData() { TeamName = TeamName.Team1, RoomUnitPositionId = positionId });
+
+            var nextState = StateMachine.ExecCommand(commandRoomUnitDamage, stateExecutionStep);
+            var isRoomDamaged = nextState.State.TeamState[TeamName.Team1].Vessel.IsRoomUnitDamaged(positionId);
+
+            Assert.True(isRoomDamaged);
+
+            var commandRoomUnitRepair = new CommandRoomUnitsRepair(new CommandRoomUnitsRepairData() { TeamName = TeamName.Team1, RoomUnitPositionIds = [positionId] });
+            var nextState2 = StateMachine.ExecCommand(commandRoomUnitRepair, stateExecutionStep);
+
+            var isRoomRepaired = !nextState2.State.TeamState[TeamName.Team1].Vessel.IsRoomUnitDamaged(positionId);
+
+            Assert.True(isRoomRepaired);
+        }
+
+        [Fact]
+        public void ExecRoomUnitRepair_WithRoomPositionId_RoomUnitRepairedByType()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var positionId1 = "Front:UP1";
+            var positionId2 = "Front:UP2";
+            var positionId3 = "Front:UP3";
+            var positionId4 = "Rear:UP3";
+
+            var commandRoomUnitDamage1 = new CommandRoomUnitDamage(new CommandRoomUnitDamageData() { TeamName = TeamName.Team1, RoomUnitPositionId = positionId1 });
+            var commandRoomUnitDamage2 = new CommandRoomUnitDamage(new CommandRoomUnitDamageData() { TeamName = TeamName.Team1, RoomUnitPositionId = positionId2 });
+            var commandRoomUnitDamage3 = new CommandRoomUnitDamage(new CommandRoomUnitDamageData() { TeamName = TeamName.Team1, RoomUnitPositionId = positionId3 });
+            var commandRoomUnitDamage4 = new CommandRoomUnitDamage(new CommandRoomUnitDamageData() { TeamName = TeamName.Team1, RoomUnitPositionId = positionId4 });
+
+            var nextState1 = StateMachine.ExecCommand(commandRoomUnitDamage1, stateExecutionStep);
+            var nextState2 = StateMachine.ExecCommand(commandRoomUnitDamage2, nextState1);
+            var nextState3 = StateMachine.ExecCommand(commandRoomUnitDamage3, nextState2);
+            var nextState4 = StateMachine.ExecCommand(commandRoomUnitDamage4, nextState3);
+
+            var commandRoomUnitRepairByType = new CommandRoomUnitsRepairByType(new CommandRoomUnitsRepairByTypeData() { TeamName = TeamName.Team1, RoomUnitType = RoomUnitType.Yellow });
+
+            StateMachine.ExecCommand(commandRoomUnitRepairByType, nextState4);
+
+            var isRoomRepaired = !nextState2.State.TeamState[TeamName.Team1].Vessel.IsRoomUnitDamaged(positionId1);
+
+            Assert.True(isRoomRepaired);
         }
     }
 }
