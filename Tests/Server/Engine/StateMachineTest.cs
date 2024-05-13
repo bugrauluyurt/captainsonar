@@ -10,6 +10,7 @@ using CaptainSonar.Common.Domain.Commands;
 using CaptainSonar.Common.Domain.Game;
 using CaptainSonar.Tests.Utils;
 using CaptainSonar.Common.Domain.Vessel;
+using CaptainSonar.Common.Domain.Assets;
 
 namespace CaptainSonar.Tests.Server.Engine
 {
@@ -158,6 +159,19 @@ namespace CaptainSonar.Tests.Server.Engine
             var isRoomRepaired = !nextState2.State.TeamState[TeamName.Team1].Vessel.IsRoomUnitDamaged(positionId1);
 
             Assert.True(isRoomRepaired);
+        }
+
+        [Fact]
+        public void ExecAssetLoad_WithAssetName_AssetIsLoaded()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var commandAssetLoad = new CommandAssetIncrease(new CommandAssetIncreaseData() { TeamName = TeamName.Team1, AssetName = AssetName.Mine });
+
+            var nextState = StateMachine.ExecCommand(commandAssetLoad, stateExecutionStep);
+            var assetMine = nextState.State.TeamState[TeamName.Team1].Assets.ToList().FirstOrDefault(asset => asset.AssetName == AssetName.Mine);
+            var isAssetLoadedOne = assetMine is not null && assetMine.Slots.GetCurrentSize() == 1;
+            Assert.True(isAssetLoadedOne);
         }
     }
 }
