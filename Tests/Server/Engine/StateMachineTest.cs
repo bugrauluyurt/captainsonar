@@ -173,5 +173,82 @@ namespace CaptainSonar.Tests.Server.Engine
             var isAssetLoadedOne = assetMine is not null && assetMine.Slots.GetCurrentSize() == 1;
             Assert.True(isAssetLoadedOne);
         }
+
+        [Fact]
+        public void ExecAssetDeployMine_WithValidCoordinate_MineIsDeployed()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var commandAssetDeployMine = new CommandAssetDeployMine(new CommandAssetDeployMineData() { TeamName = TeamName.Team1, Coordinate = new Coordinate(1, 1) });
+            var asset = stateExecutionStep.State.TeamState[TeamName.Team1].Assets.ToList().FirstOrDefault(asset => asset.AssetName == AssetName.Mine);
+
+            for (int i = 0; i < asset?.Slots.GetTotalSize(); i++)
+            {
+                asset.Slots.Load();
+            }
+
+            var nextState = StateMachine.ExecCommand(commandAssetDeployMine, stateExecutionStep);
+            var hasMine = nextState.State.TeamState[TeamName.Team1].Mines.Count == 1;
+            var isMineAssetEmptied = asset?.Slots.GetCurrentSize() == 0;
+
+            Assert.True(isMineAssetEmptied);
+            Assert.True(hasMine);
+        }
+
+        [Fact]
+        public void ExecAssetDeployTorpedo_WithValidCoordinate_TorpedoGetsDeployed()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(new Coordinate(0, 1)));
+            var commandAssetDeployTorpedo = new CommandAssetDeployTorpedo(new CommandAssetDeployTorpedoData() { TeamName = TeamName.Team1, Coordinate = new Coordinate(0, 3) });
+            var asset = stateExecutionStep.State.TeamState[TeamName.Team1].Assets.ToList().FirstOrDefault(asset => asset.AssetName == AssetName.Torpedo);
+
+            for (int i = 0; i < asset?.Slots.GetTotalSize(); i++)
+            {
+                asset.Slots.Load();
+            }
+
+            var nextState = StateMachine.ExecCommand(commandAssetDeployTorpedo, stateExecutionStep);
+            var isTorpedoEmptied = asset?.Slots.GetCurrentSize() == 0;
+
+            Assert.True(isTorpedoEmptied);
+        }
+
+        [Fact]
+        public void ExecAssetDeployDrone_WithTeamName_DroneGetsDeployed()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(new Coordinate(0, 1)));
+            var commandAssetDeployDrone = new CommandAssetDeployDrone(new CommandAssetDeployDroneData() { TeamName = TeamName.Team1 });
+            var asset = stateExecutionStep.State.TeamState[TeamName.Team1].Assets.ToList().FirstOrDefault(asset => asset.AssetName == AssetName.Drone);
+
+            for (int i = 0; i < asset?.Slots.GetTotalSize(); i++)
+            {
+                asset.Slots.Load();
+            }
+
+            var nextState = StateMachine.ExecCommand(commandAssetDeployDrone, stateExecutionStep);
+            var isDroneEmptied = asset?.Slots.GetCurrentSize() == 0;
+
+            Assert.True(isDroneEmptied);
+        }
+
+        [Fact]
+        public void ExecAssetDeploySonar_WithTeamName_SonarGetsDeployed()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            var commandAssetDeploySonar = new CommandAssetDeploySonar(new CommandAssetDeploySonarData() { TeamName = TeamName.Team1 });
+            var asset = stateExecutionStep.State.TeamState[TeamName.Team1].Assets.ToList().FirstOrDefault(asset => asset.AssetName == AssetName.Sonar);
+
+            for (int i = 0; i < asset?.Slots.GetTotalSize(); i++)
+            {
+                asset.Slots.Load();
+            }
+
+            var nextState = StateMachine.ExecCommand(commandAssetDeploySonar, stateExecutionStep);
+            var isSonarEmptied = asset?.Slots.GetCurrentSize() == 0;
+
+            Assert.True(isSonarEmptied);
+        }
     }
 }
