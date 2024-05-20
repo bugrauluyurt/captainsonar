@@ -60,16 +60,6 @@ namespace CaptainSonar.Common.Domain.Map
                 return 0;
             }
 
-            if (start.Row == end.Row)
-            {
-                return Math.Abs(start.Column - end.Column);
-            }
-
-            if (start.Column == end.Column)
-            {
-                return Math.Abs(start.Row - end.Row);
-            }
-
             var shortestPath = FindShortestPath(matrix, start, end);
 
             if (shortestPath == null)
