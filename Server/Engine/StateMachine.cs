@@ -23,6 +23,7 @@ namespace CaptainSonar.Server.Engine
     public class StateDiagnostic
     {
         public string? DiagnosticMessage { get; set; }
+        public string? StackTrace { get; set; }
         public int? DiagnosticCode { get; set; }
     }
 

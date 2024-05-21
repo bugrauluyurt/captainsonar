@@ -9,6 +9,7 @@ namespace CaptainSonar.Server.Engine
     {
         private static readonly Dictionary<int, string> DiagnosticMessage = new() {
             // Exceptions
+            { 1000, "An exception occurred."},
             { 1001, "Player is required to start the game." },
             { 1002, "Game is already finished." },
             { 1003, "Game is already started." },
