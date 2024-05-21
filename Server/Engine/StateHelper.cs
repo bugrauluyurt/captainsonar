@@ -199,17 +199,17 @@ namespace CaptainSonar.Server.Engine
                 {
                     return state;
                 }
-                if (index.Value >= state.TeamState[teamName].Info.Count)
+                if (index.Value >= state.TeamState[teamName].Info.Count || state.TeamState[teamName].Info[index.Value] is null)
                 {
                     return state;
                 }
                 state.TeamState[teamName].Info[index.Value].Text = text ?? "";
-                state.TeamState[teamName].Info[index.Value].Location = location ?? null;
+                state.TeamState[teamName].Info[index.Value].Coordinate = location ?? null;
                 return state;
             }
             state.TeamState[teamName].Info.Add(new StateInfo
             {
-                Location = location ?? null,
+                Coordinate = location ?? null,
                 Text = text ?? ""
             });
             return state;

@@ -237,7 +237,7 @@ namespace CaptainSonar.Server.Engine
                     1020
                 ),
                 (
-                    assetMine is not null && assetMine.Slots.IsEmpty,
+                    assetMine is not null && !assetMine.Slots.IsLoaded,
                     1021
                 ),
                 (
@@ -277,7 +277,7 @@ namespace CaptainSonar.Server.Engine
                     1020
                 ),
                 (
-                    assetTorpedo is not null && assetTorpedo.Slots.IsEmpty,
+                    assetTorpedo is not null && !assetTorpedo.Slots.IsLoaded,
                     1021
                 ),
                 (
@@ -297,7 +297,7 @@ namespace CaptainSonar.Server.Engine
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
-                    assetDrone is not null && assetDrone.Slots.IsEmpty,
+                    assetDrone is not null && !assetDrone.Slots.IsLoaded,
                     1021
                 )
             ], []);
@@ -313,7 +313,7 @@ namespace CaptainSonar.Server.Engine
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
 
                 (
-                    assetSonar is not null && assetSonar.Slots.IsEmpty,
+                    assetSonar is not null && !assetSonar.Slots.IsLoaded,
                     1021
                 )
             ], []);
@@ -339,7 +339,7 @@ namespace CaptainSonar.Server.Engine
                     1012
                 ),
                 (
-                    assetSilence is not null && assetSilence.Slots.IsEmpty,
+                    assetSilence is not null && !assetSilence.Slots.IsLoaded,
                     1021
                 ),
                 (
@@ -369,17 +369,12 @@ namespace CaptainSonar.Server.Engine
             var state = stateExecutionStep.State;
             var grid = state.Grid;
             var gridType = grid.MapType;
-            var assetMine = state.TeamState[teamName].Assets.FirstOrDefault(asset => asset.AssetName == AssetName.Mine);
             var mine = state.TeamState[teamName].Mines.FirstOrDefault(mine => mine.Dot.Location.ToString() == mineCoordinate.ToString());
 
             return StateDiagnosticsGenerator.Generate(stateExecutionStep, [
                 (
                     mine is null,
                     1026
-                ),
-                (
-                    assetMine is not null && assetMine.Slots.IsEmpty,
-                    1021
                 ),
                 (
                     !MapHelpers.IsCoordinateInBounds(mineCoordinate, gridType),

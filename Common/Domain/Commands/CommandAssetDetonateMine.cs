@@ -6,8 +6,8 @@ namespace CaptainSonar.Common.Domain.Commands
 {
     public class CommandAssetDetonateMineData
     {
-        public TeamName TeamName { get; set; }
-        public Coordinate Coordinate { get; set; } = null!;
+        public required TeamName TeamName { get; init; }
+        public required Coordinate Coordinate { get; init; }
     }
 
     public class CommandAssetDetonateMine(CommandAssetDetonateMineData data) : Command<CommandAssetDetonateMineData>(CommandName.Asset_Detonate_Mine, data)

@@ -441,18 +441,19 @@ namespace CaptainSonar.Server.Engine
         {
             var teamName = command.Data.TeamName;
             var text = command.Data.Text;
-            var location = command.Data.Location;
+            var coordinate = command.Data.Coordinate;
+            var index = command.Data.Index;
 
             return StateMachineHelper.ExecStep(
                 // Validator
-                () => StateValidator.ValidateInfoAdd(stateExecutionStep, location, text),
+                () => StateValidator.ValidateInfoAdd(stateExecutionStep, coordinate, text),
                 // Executor
                 (nextStep) =>
                 {
                     return StateMachineHelper.ComposeState(
                         nextStep,
                         [
-                            (stateNext) =>  StateHelper.UpsertInfo(stateNext, teamName, text, location, null)
+                            (stateNext) =>  StateHelper.UpsertInfo(stateNext, teamName, text, coordinate, index)
                         ]
                     );
                 }

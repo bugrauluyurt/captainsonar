@@ -250,5 +250,97 @@ namespace CaptainSonar.Tests.Server.Engine
 
             Assert.True(isSonarEmptied);
         }
+
+        [Fact]
+        public void ExecAssetDeploySilence_WithCoordinates_PlayerJumpsCoordinates()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(new Coordinate(0, 1)));
+            var commandAssetDeploySilence = new CommandAssetDeploySilence(new CommandAssetDeploySilenceData() { TeamName = TeamName.Team1, Coordinates = [new Coordinate(0, 2), new Coordinate(0, 3), new Coordinate(0, 4)] });
+            var asset = stateExecutionStep.State.TeamState[TeamName.Team1].Assets.ToList().FirstOrDefault(asset => asset.AssetName == AssetName.Silence);
+
+            for (int i = 0; i < asset?.Slots.GetTotalSize(); i++)
+            {
+                asset.Slots.Load();
+            }
+
+            var nextState = StateMachine.ExecCommand(commandAssetDeploySilence, stateExecutionStep);
+            var isSilenceEmptied = asset?.Slots.GetCurrentSize() == 0;
+            var isPlayerJumped = nextState.State.TeamState[TeamName.Team1].Dots.Count == 4;
+
+            Assert.True(isSilenceEmptied);
+            Assert.True(isPlayerJumped);
+        }
+
+        [Fact]
+        public void ExecAssetDetonateMine_WithCoordinates_MineGetsDetonated()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+            stateExecutionStep.State.TeamState[TeamName.Team1].Dots.Add(new Dot(new Coordinate(0, 1)));
+            stateExecutionStep.State.TeamState[TeamName.Team1].Mines.Add(new StateMine() { Dot = new Dot(new Coordinate(0, 4)) });
+
+            var asset = stateExecutionStep.State.TeamState[TeamName.Team1].Assets.ToList().FirstOrDefault(asset => asset.AssetName == AssetName.Mine);
+            for (int i = 0; i < asset?.Slots.GetTotalSize(); i++)
+            {
+                asset.Slots.Load();
+            }
+
+            var commandAssetDetonateMine = new CommandAssetDetonateMine(new CommandAssetDetonateMineData() { TeamName = TeamName.Team1, Coordinate = new Coordinate(0, 4) });
+
+            var nextState = StateMachine.ExecCommand(commandAssetDetonateMine, stateExecutionStep);
+
+            var isMineDetonated = !nextState.State.TeamState[TeamName.Team1].Mines.Any(mine => mine.Dot.Location.Row == 0 && mine.Dot.Location.Column == 4);
+
+            Assert.True(isMineDetonated);
+        }
+
+        [Fact]
+        public void ExecInfoUpsert_WithNewTextAndLocation_InfoGetsAdded()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var commandInfoUpsert = new CommandInfoUpsert(new CommandInfoUpsertData() { TeamName = TeamName.Team1, Coordinate = null, Text = "Hello World", Index = null });
+
+            var nextState = StateMachine.ExecCommand(commandInfoUpsert, stateExecutionStep);
+
+            var isInfoAdded = nextState.State.TeamState[TeamName.Team1].Info.Any(info => info.Text == "Hello World" && info.Coordinate is null);
+            Assert.True(isInfoAdded);
+        }
+
+        [Fact]
+        public void ExecInfoUpsert_WithTextLocationAndIndex_InfoGetsUpserted()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var commandInfoUpsert = new CommandInfoUpsert(new CommandInfoUpsertData() { TeamName = TeamName.Team1, Coordinate = null, Text = "Hello World", Index = null });
+
+            var nextState = StateMachine.ExecCommand(commandInfoUpsert, stateExecutionStep);
+
+            var commandInfoUpsertWithIndex = new CommandInfoUpsert(new CommandInfoUpsertData() { TeamName = TeamName.Team1, Coordinate = null, Text = "Hello Neptune", Index = 0 });
+            var nextStateNew = StateMachine.ExecCommand(commandInfoUpsertWithIndex, nextState);
+
+            var isInfoUpserted = nextStateNew.State.TeamState[TeamName.Team1].Info.Any(info => info.Text == "Hello Neptune" && info.Coordinate is null) && nextStateNew.State.TeamState[TeamName.Team1].Info.Count == 1;
+
+            Assert.True(isInfoUpserted);
+        }
+
+        [Fact]
+        public void ExecInfoRemove_WithIndex_InfoGetsRemoved()
+        {
+            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
+
+            var commandInfoUpsert = new CommandInfoUpsert(new CommandInfoUpsertData() { TeamName = TeamName.Team1, Coordinate = null, Text = "Hello World", Index = null });
+
+            var nextState = StateMachine.ExecCommand(commandInfoUpsert, stateExecutionStep);
+
+            var commandInfoUpsertWithIndex = new CommandInfoUpsert(new CommandInfoUpsertData() { TeamName = TeamName.Team1, Coordinate = null, Text = "Hello Neptune", Index = null });
+            var nextStateNew = StateMachine.ExecCommand(commandInfoUpsertWithIndex, nextState);
+
+            var commandInfoRemove = new CommandInfoRemove(new CommandInfoRemoveData() { Index = 0, TeamName = TeamName.Team1 });
+            var nextStateWithRemoved = StateMachine.ExecCommand(commandInfoRemove, nextStateNew);
+
+            var isInfoRemoved = !nextStateWithRemoved.State.TeamState[TeamName.Team1].Info.Any(info => info.Text == "Hello World" && info.Coordinate is null) && nextStateWithRemoved.State.TeamState[TeamName.Team1].Info.Count == 1;
+            Assert.True(isInfoRemoved);
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace CaptainSonar.Server.Engine
 
     public class StateInfo
     {
-        public required Coordinate? Location { get; set; } = null;
+        public required Coordinate? Coordinate { get; set; } = null;
         public string Text { get; set; } = "";
     }
 

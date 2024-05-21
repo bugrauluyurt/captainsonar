@@ -5,8 +5,8 @@ namespace CaptainSonar.Common.Domain.Commands
 {
     public class CommandInfoRemoveData
     {
-        public TeamName TeamName { get; set; }
-        public int Index { get; set; }
+        public required TeamName TeamName { get; init; }
+        public required int Index { get; init; }
     }
 
     public class CommandInfoRemove(CommandInfoRemoveData data) : Command<CommandInfoRemoveData>(CommandName.Info_Remove, data)

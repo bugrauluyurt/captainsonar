@@ -376,17 +376,6 @@ namespace CaptainSonar.Tests.Server.Engine
         }
 
         [Fact]
-        public void ValidateAssetDetonateMine_WithEmptySlots_ReturnsError()
-        {
-            var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
-            Coordinate mineCoordinate = new(0, 1);
-
-            var validatedState = StateValidator.ValidateAssetDetonateMine(stateExecutionStep, TeamName.Team1, mineCoordinate);
-            var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1021);
-            Assert.True(hasError);
-        }
-
-        [Fact]
         public void ValidateAssetDetonateMine_WithNoMineOnCoordinate_ReturnsError()
         {
             var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
@@ -417,7 +406,7 @@ namespace CaptainSonar.Tests.Server.Engine
         public void ValidateInfoRemove_WithInvalidIndex_ReturnsError()
         {
             var stateExecutionStep = TestUtils.CreateStateExecutionStep(null);
-            stateExecutionStep.State.TeamState[TeamName.Team1].Info.Add(new StateInfo() { Location = new Coordinate(0, 2), Text = "Test" });
+            stateExecutionStep.State.TeamState[TeamName.Team1].Info.Add(new StateInfo() { Coordinate = new Coordinate(0, 2), Text = "Test" });
 
             var validatedState = StateValidator.ValidateInfoRemove(stateExecutionStep, TeamName.Team1, 2);
             var hasError = validatedState.StateDiagnosticsExceptions.Any(x => x.DiagnosticCode == 1029);
